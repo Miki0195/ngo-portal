@@ -6,7 +6,6 @@ const authService = {
       const response = await api.post('/api/ngo/login/', { email, password });
       
       if (response.data.access) {
-        // Store tokens and user info in localStorage
         localStorage.setItem('token', response.data.access);
         localStorage.setItem('refreshToken', response.data.refresh);
         localStorage.setItem('user', JSON.stringify({

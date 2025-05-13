@@ -1,0 +1,181 @@
+.create-event-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.create-event-header {
+  margin-bottom: 2rem;
+}
+
+.create-event-header h1 {
+  font-size: 1.8rem;
+  color: #2d3748;
+  margin: 0;
+}
+
+.create-event-form {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.form-error {
+  background-color: #fed7d7;
+  color: #c53030;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.form-section {
+  padding: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.form-section h2 {
+  font-size: 1.2rem;
+  color: #2d3748;
+  margin: 0 0 1.5rem 0;
+}
+
+.form-group {
+  margin-bottom: 1.2rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: #4a5568;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #4299e1;
+  box-shadow: 0 0 0 1px #4299e1;
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.form-group.half {
+  flex: 1;
+  min-width: 200px;
+}
+
+.location-button {
+  background-color: #e2e8f0;
+  color: #4a5568;
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 0.5rem;
+}
+
+.location-button:hover {
+  background-color: #cbd5e0;
+}
+
+.image-preview {
+  margin-top: 1rem;
+  border-radius: 4px;
+  overflow: hidden;
+  max-height: 200px;
+}
+
+.image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1.5rem;
+}
+
+.cancel-button,
+.submit-button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.cancel-button {
+  background-color: #e2e8f0;
+  color: #4a5568;
+  border: none;
+}
+
+.cancel-button:hover:not(:disabled) {
+  background-color: #cbd5e0;
+}
+
+.submit-button {
+  background-color: #4299e1;
+  color: white;
+  border: none;
+}
+
+.submit-button:hover:not(:disabled) {
+  background-color: #3182ce;
+}
+
+.cancel-button:disabled,
+.submit-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.create-event-success {
+  background-color: #c6f6d5;
+  color: #276749;
+  text-align: center;
+  padding: 2rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+  .create-event-container {
+    padding: 1rem;
+  }
+  
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+  
+  .cancel-button,
+  .submit-button {
+    width: 100%;
+  }
+} 

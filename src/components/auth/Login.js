@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authService from '../../services/authService';
-import './Login.css';
+import '../../styles/Login.css';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -25,7 +25,6 @@ const Login = () => {
       const response = await authService.login(email, password);
       
       if (response.success) {
-        // Redirect to dashboard upon successful login
         navigate('/dashboard');
       } else {
         setError(response.error);

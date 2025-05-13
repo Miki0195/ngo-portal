@@ -2,13 +2,24 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './auth/Login';
 import Dashboard from './dashboard/Dashboard';
+import EventsList from './events/EventsList';
+import EventDetails from './events/EventDetails';
+import CreateEvent from './events/CreateEvent';
+import Layout from './layout/Layout';
 import authService from '../services/authService';
 import './App.css';
 
-// Protected route component
 const ProtectedRoute = ({ children }) => {
   const isAuthenticated = authService.isAuthenticated();
   return isAuthenticated ? children : <Navigate to="/login" />;
+};
+
+const ProtectedLayout = ({ children }) => {
+  return (
+    <ProtectedRoute>
+      <Layout>{children}</Layout>
+    </ProtectedRoute>
+  );
 };
 
 function App() {
@@ -16,13 +27,47 @@ function App() {
     <Router>
       <div className="App">
         <Routes>
+          {/* Public routes */}
           <Route path="/login" element={<Login />} />
+          
+          {/* Protected routes with Layout */}
           <Route path="/dashboard" element={
-            <ProtectedRoute>
+            <ProtectedLayout>
               <Dashboard />
-            </ProtectedRoute>
+            </ProtectedLayout>
           } />
-          <Route path="/" element={<Navigate to="/login" />} />
+          
+          <Route path="/events" element={
+            <ProtectedLayout>
+              <EventsList />
+            </ProtectedLayout>
+          } />
+          
+          <Route path="/events/create" element={
+            <ProtectedLayout>
+              <CreateEvent />
+            </ProtectedLayout>
+          } />
+          
+          <Route path="/events/:id" element={
+            <ProtectedLayout>
+              <EventDetails />
+            </ProtectedLayout>
+          } />
+          
+          {/* Redirect root to login or dashboard based on auth status */}
+          <Route path="/" element={
+            authService.isAuthenticated() 
+              ? <Navigate to="/dashboard" /> 
+              : <Navigate to="/login" />
+          } />
+          
+          {/* Catch all route - redirect to dashboard if authenticated */}
+          <Route path="*" element={
+            authService.isAuthenticated() 
+              ? <Navigate to="/dashboard" /> 
+              : <Navigate to="/login" />
+          } />
         </Routes>
       </div>
     </Router>

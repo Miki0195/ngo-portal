@@ -1,28 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authService from '../../services/authService';
-import './Dashboard.css';
+import '../../styles/Dashboard.css';
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if user is authenticated
     if (!authService.isAuthenticated()) {
       navigate('/login');
       return;
     }
 
-    // Get current user info
     const currentUser = authService.getCurrentUser();
     setUser(currentUser);
   }, [navigate]);
-
-  const handleLogout = () => {
-    authService.logout();
-    navigate('/login');
-  };
 
   if (!user) {
     return <div className="loading">Loading...</div>;
@@ -32,9 +25,6 @@ const Dashboard = () => {
     <div className="dashboard-container">
       <div className="dashboard-header">
         <h1>Welcome to the NGO Portal</h1>
-        <button className="logout-button" onClick={handleLogout}>
-          Logout
-        </button>
       </div>
       
       <div className="dashboard-content">
