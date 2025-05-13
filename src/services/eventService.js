@@ -90,6 +90,14 @@ const eventService = {
 
   createEvent: async (eventData) => {
     try {
+      if (eventData.focus_teams && !Array.isArray(eventData.focus_teams)) {
+        eventData.focus_teams = [].concat(eventData.focus_teams || []);
+      }
+      
+      if (eventData.competences && !Array.isArray(eventData.competences)) {
+        eventData.competences = [].concat(eventData.competences || []);
+      }
+      
       const response = await api.post('/api/events/create/', eventData);
       
       const ngoId = eventData.organized_by;

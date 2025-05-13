@@ -6,6 +6,18 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  // Prevent axios from transforming arrays to strings in params and data
+  paramsSerializer: params => {
+    return Object.entries(params)
+      .map(([key, value]) => {
+        if (Array.isArray(value)) {
+          // Keep arrays as is in JSON
+          return `${key}=${encodeURIComponent(JSON.stringify(value))}`;
+        }
+        return `${key}=${encodeURIComponent(value)}`;
+      })
+      .join('&');
+  }
 });
 
 // Request interceptor to add auth token when available
@@ -15,11 +27,13 @@ api.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    
     return config;
   },
   (error) => {
     return Promise.reject(error);
   }
 );
+
 
 export default api; 

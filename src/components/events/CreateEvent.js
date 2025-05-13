@@ -9,6 +9,8 @@ const CreateEvent = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+  const [teamOptions, setTeamOptions] = useState([]);
+  const [competenceOptions, setCompetenceOptions] = useState([]);
   const user = authService.getCurrentUser();
 
   // State for form data
@@ -17,10 +19,12 @@ const CreateEvent = () => {
     eventDescription: '',
     startDate: '',
     endDate: '',
-    markerType: 1, // Default to "Volunteering opportunity"
+    markerType: 1, 
     people_needed: 0,
     event_xp: 0,
     main_image_url: '',
+    focus_teams: [], 
+    competences: [], 
     location: {
       latitude: 0,
       longitude: 0,
@@ -28,7 +32,32 @@ const CreateEvent = () => {
     }
   });
 
-  // Marker types from backend constants
+  // Fetch team and competence options
+  useEffect(() => {
+    const fetchFilteringOptions = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/api/events/filters/');
+        if (response.ok) {
+          const data = await response.json();
+          
+          if (data.teams && data.teams.length > 0) {
+            setTeamOptions(data.teams);
+          }
+          if (data.competences && data.competences.length > 0) {
+            setCompetenceOptions(data.competences);
+          }
+        } else {
+          console.error('Failed to fetch filtering options');
+        }
+      } catch (error) {
+        console.error('Error fetching filtering options:', error);
+      }
+    };
+
+    fetchFilteringOptions();
+  }, []);
+
+  // Marker types from backend constants - we should fetch these as well
   const markerTypes = [
     { id: 1, name: "Volunteering opportunity" },
     { id: 2, name: "Sustainable event" },
@@ -38,7 +67,6 @@ const CreateEvent = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     
-    // Handle nested properties (location)
     if (name.includes('location.')) {
       const locationField = name.split('.')[1];
       setFormData(prev => ({
@@ -51,7 +79,6 @@ const CreateEvent = () => {
         }
       }));
     } else {
-      // Handle regular fields
       setFormData(prev => ({
         ...prev,
         [name]: name === 'markerType' || name === 'people_needed' || name === 'event_xp'
@@ -59,6 +86,42 @@ const CreateEvent = () => {
           : value
       }));
     }
+  };
+
+  const handleTeamCheckbox = (teamId) => {
+    setFormData(prev => {
+      const isSelected = prev.focus_teams.includes(teamId);
+      
+      if (isSelected) {
+        return {
+          ...prev,
+          focus_teams: prev.focus_teams.filter(id => id !== teamId)
+        };
+      } else {
+        return {
+          ...prev,
+          focus_teams: [...prev.focus_teams, teamId]
+        };
+      }
+    });
+  };
+
+  const handleCompetenceCheckbox = (competenceId) => {
+    setFormData(prev => {
+      const isSelected = prev.competences.includes(competenceId);
+      
+      let updatedCompetences;
+      if (isSelected) {
+        updatedCompetences = prev.competences.filter(id => id !== competenceId);
+      } else {
+        updatedCompetences = [...prev.competences, competenceId];
+      }
+      
+      return {
+        ...prev,
+        competences: updatedCompetences
+      };
+    });
   };
 
   const validateForm = () => {
@@ -95,6 +158,10 @@ const CreateEvent = () => {
     if (formData.people_needed < 0) {
       errors.push('Number of people needed must be 0 or greater');
     }
+
+    if (formData.focus_teams.length === 0) {
+      errors.push('At least one team must be selected');
+    }
     
     return errors;
   };
@@ -112,17 +179,18 @@ const CreateEvent = () => {
     setError(null);
     
     try {
-      // Add the NGO ID to the event data
-      const eventDataToSubmit = {
+      const eventDataToSubmit = JSON.parse(JSON.stringify({
         ...formData,
         organized_by: user.ngoId
-      };
+      }));
+      
+      eventDataToSubmit.focus_teams = Array.isArray(formData.focus_teams) ? formData.focus_teams : [];
+      eventDataToSubmit.competences = Array.isArray(formData.competences) ? formData.competences : [];
       
       const response = await eventService.createEvent(eventDataToSubmit);
       
       if (response.success) {
         setSuccess(true);
-        // Navigate to event details after a short delay
         setTimeout(() => {
           navigate(`/events/${response.data.id}`);
         }, 1500);
@@ -130,14 +198,12 @@ const CreateEvent = () => {
         setError(response.error);
       }
     } catch (err) {
-      console.error('Error creating event:', err);
       setError('Failed to create event. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
-  // Helper function for location using browser geolocation API
   const getUserLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -227,19 +293,71 @@ const CreateEvent = () => {
               </div>
             </div>
             
+            <div className="form-row">
+              <div className="form-group half">
+                <label htmlFor="markerType">Event Type*</label>
+                <select
+                  id="markerType"
+                  name="markerType"
+                  value={formData.markerType}
+                  onChange={handleChange}
+                  required
+                >
+                  {markerTypes.map(type => (
+                    <option key={type.id} value={type.id}>{type.name}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div className="form-section">
+            <h2>Teams & Competences</h2>
+            
             <div className="form-group">
-              <label htmlFor="markerType">Event Type*</label>
-              <select
-                id="markerType"
-                name="markerType"
-                value={formData.markerType}
-                onChange={handleChange}
-                required
-              >
-                {markerTypes.map(type => (
-                  <option key={type.id} value={type.id}>{type.name}</option>
-                ))}
-              </select>
+              <label>Teams*</label>
+              <div className="checkbox-group">
+                {teamOptions.length > 0 ? (
+                  teamOptions.map(team => (
+                    <div key={team.id} className="checkbox-item">
+                      <input
+                        type="checkbox"
+                        id={`team-${team.id}`}
+                        checked={formData.focus_teams.includes(team.id)}
+                        onChange={() => handleTeamCheckbox(team.id)}
+                      />
+                      <label htmlFor={`team-${team.id}`}>{team.name}</label>
+                    </div>
+                  ))
+                ) : (
+                  <p>No teams available</p>
+                )}
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label>Competences (optional)</label>
+              <div className="checkbox-group">
+                {competenceOptions.length > 0 ? (
+                  competenceOptions.map(competence => {
+                    const competenceId = competence.name; // Using name as the ID - should create IDs for competences
+                    
+                    return (
+                      <div key={competenceId} className="checkbox-item">
+                        <input
+                          type="checkbox"
+                          id={`competence-${competenceId}`}
+                          checked={formData.competences.includes(competenceId)}
+                          onChange={() => handleCompetenceCheckbox(competenceId)}
+                        />
+                        <label htmlFor={`competence-${competenceId}`}>{competence.name}</label>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <p>No competences available</p>
+                )}
+              </div>
             </div>
           </div>
 
@@ -307,6 +425,7 @@ const CreateEvent = () => {
                 name="people_needed"
                 value={formData.people_needed}
                 onChange={handleChange}
+                required
               />
             </div>
             
@@ -319,6 +438,7 @@ const CreateEvent = () => {
                 name="event_xp"
                 value={formData.event_xp}
                 onChange={handleChange}
+                required
               />
             </div>
             
