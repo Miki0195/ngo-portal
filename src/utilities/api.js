@@ -4,7 +4,7 @@ import axios from 'axios';
 const api = axios.create({
   baseURL: 'http://localhost:8000', // Adjust this to match your Django backend URL
   headers: {
-    'Content-Type': 'application/json',
+    'Content-Type': 'application/json'
   },
   // Prevent axios from transforming arrays to strings in params and data
   paramsSerializer: params => {
@@ -26,6 +26,12 @@ api.interceptors.request.use(
     const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+    }
+    
+    // Add timestamp to GET requests to prevent caching
+    if (config.method === 'get') {
+      config.params = config.params || {};
+      config.params['_t'] = Date.now();
     }
     
     return config;

@@ -68,6 +68,41 @@ const eventService = {
     }
   },
 
+  filterEvents: async (ngoId, filters = {}) => {
+    try {
+      // First get all events for the NGO
+      const eventsResponse = await eventService.getNGOEvents(ngoId);
+      
+      if (!eventsResponse.success) {
+        return eventsResponse;
+      }
+      
+      let filteredEvents = [...eventsResponse.data];
+      
+      // Filter by search term (event name)
+      if (filters.searchTerm) {
+        const searchLower = filters.searchTerm.toLowerCase();
+        filteredEvents = filteredEvents.filter(event =>
+          event.eventName.toLowerCase().includes(searchLower)
+        );
+      }
+      
+      // Filter by start date
+      if (filters.startDate) {
+        const filterDate = new Date(filters.startDate);
+        filteredEvents = filteredEvents.filter(event => {
+          const eventStartDate = new Date(event.startDate);
+          return eventStartDate >= filterDate;
+        });
+      }
+      
+      return { success: true, data: filteredEvents };
+    } catch (error) {
+      const errorMessage = error.message || 'Failed to filter events';
+      return { success: false, error: errorMessage };
+    }
+  },
+
   getEventById: async (eventId) => {
     const cachedEvent = cache.get(eventId, 'eventDetails');
     if (cachedEvent) {
@@ -111,18 +146,28 @@ const eventService = {
       return { success: false, error: errorMessage };
     }
   },
-
+  
   updateEvent: async (eventId, eventData) => {
     try {
+      if (eventData.focus_teams && !Array.isArray(eventData.focus_teams)) {
+        eventData.focus_teams = [].concat(eventData.focus_teams || []);
+      }
+      
+      if (eventData.competences && !Array.isArray(eventData.competences)) {
+        eventData.competences = [].concat(eventData.competences || []);
+      }
+      
+      console.log('Sending data to update event:', eventData);
       const response = await api.put(`/api/events/${eventId}/update/`, eventData);
       
-      if (response.data) {
-        cache.set(eventId, response.data, 'eventDetails');
-        cache.clear('events');
-      }
+      // Clear all related caches to ensure we get fresh data
+      cache.clearAll();
+      console.log('Cache cleared after event update');
       
       return { success: true, data: response.data };
     } catch (error) {
+      console.error('Error updating event:', error);
+      console.error('Error response:', error.response);
       const errorMessage = error.response?.data?.error || 'Failed to update event';
       return { success: false, error: errorMessage };
     }

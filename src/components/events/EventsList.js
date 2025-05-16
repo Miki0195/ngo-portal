@@ -2,12 +2,18 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import eventService from '../../services/eventService';
 import authService from '../../services/authService';
+import EventsFilter from './EventsFilter';
 import '../../styles/EventsList.css';
 
 const EventsList = () => {
   const [events, setEvents] = useState([]);
+  const [filteredEvents, setFilteredEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [filters, setFilters] = useState({
+    searchTerm: '',
+    startDate: null
+  });
   const user = authService.getCurrentUser();
 
   const fetchEvents = useCallback(async () => {
@@ -22,6 +28,7 @@ const EventsList = () => {
       
       if (response.success) {
         setEvents(response.data);
+        setFilteredEvents(response.data);
       } else {
         setError(response.error);
       }
@@ -41,6 +48,24 @@ const EventsList = () => {
       // Cleanup logic if needed
     };
   }, [fetchEvents, loading]);
+
+  // Apply filters when filters state changes
+  useEffect(() => {
+    if (!user?.ngoId || !events.length) return;
+
+    const applyFilters = async () => {
+      const response = await eventService.filterEvents(user.ngoId, filters);
+      if (response.success) {
+        setFilteredEvents(response.data);
+      }
+    };
+
+    applyFilters();
+  }, [filters, events, user?.ngoId]);
+
+  const handleFilterChange = (newFilters) => {
+    setFilters(newFilters);
+  };
 
   const formatDate = (dateString) => {
     if (!dateString) return 'Not specified';
@@ -110,16 +135,24 @@ const EventsList = () => {
         </Link>
       </div>
 
-      {events.length === 0 ? (
+      <EventsFilter onFilterChange={handleFilterChange} />
+
+      {filteredEvents.length === 0 ? (
         <div className="no-events">
-          <p>You haven't created any events yet.</p>
-          <Link to="/events/create" className="create-first-event-btn">
-            Create Your First Event
-          </Link>
+          {events.length === 0 ? (
+            <>
+              <p>You haven't created any events yet.</p>
+              <Link to="/events/create" className="create-first-event-btn">
+                Create Your First Event
+              </Link>
+            </>
+          ) : (
+            <p>No events match your current filters.</p>
+          )}
         </div>
       ) : (
         <div className="events-grid">
-          {events.map((event) => (
+          {filteredEvents.map((event) => (
             <EventCard key={event.id} event={event} />
           ))}
         </div>

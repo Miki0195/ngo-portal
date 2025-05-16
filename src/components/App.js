@@ -5,6 +5,7 @@ import Dashboard from './dashboard/Dashboard';
 import EventsList from './events/EventsList';
 import EventDetails from './events/EventDetails';
 import CreateEvent from './events/CreateEvent';
+import EditEvent from './events/EditEvent';
 import Layout from './layout/Layout';
 import authService from '../services/authService';
 import './App.css';
@@ -52,6 +53,12 @@ function App() {
           <Route path="/events/:id" element={
             <ProtectedLayout>
               <EventDetails />
+            </ProtectedLayout>
+          } />
+          
+          <Route path="/events/:eventId/edit" element={
+            <ProtectedLayout>
+              <EditEvent />
             </ProtectedLayout>
           } />
           
