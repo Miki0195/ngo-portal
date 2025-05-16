@@ -70,7 +70,6 @@ const eventService = {
 
   filterEvents: async (ngoId, filters = {}) => {
     try {
-      // First get all events for the NGO
       const eventsResponse = await eventService.getNGOEvents(ngoId);
       
       if (!eventsResponse.success) {
@@ -79,15 +78,13 @@ const eventService = {
       
       let filteredEvents = [...eventsResponse.data];
       
-      // Filter by search term (event name)
       if (filters.searchTerm) {
         const searchLower = filters.searchTerm.toLowerCase();
         filteredEvents = filteredEvents.filter(event =>
-          event.eventName.toLowerCase().includes(searchLower)
+          event.eventName.toLowerCase().startsWith(searchLower)
         );
       }
       
-      // Filter by start date
       if (filters.startDate) {
         const filterDate = new Date(filters.startDate);
         filteredEvents = filteredEvents.filter(event => {
