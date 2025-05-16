@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import eventService from '../../services/eventService';
+import { useFilterContext } from '../../context/FilterContext';
 import '../../styles/EventDetails.css';
 
 const EventDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { filters } = useFilterContext();
   const [event, setEvent] = useState(null);
   const [gallery, setGallery] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -123,6 +125,8 @@ const EventDetails = () => {
     }
   };
 
+  const hasActiveFilters = filters.searchTerm || filters.startDate;
+
   if (loading) {
     return <div className="event-details-loading">Loading event details...</div>;
   }
@@ -151,7 +155,11 @@ const EventDetails = () => {
         <h1>{safeRenderText(event.eventName)}</h1>
         <div className="event-details-actions">
           <Link to="/events" className="back-button">
-            Back to Events
+            {hasActiveFilters ? (
+              <>Back to Filtered Events <span className="filter-indicator">•</span></>
+            ) : (
+              "Back to Events"
+            )}
           </Link>
           <Link to={`/events/${id}/edit`} className="edit-button">
             Edit Event

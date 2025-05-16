@@ -21,6 +21,21 @@
   font-size: 1.1rem;
   color: #2d3748;
   font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+
+.active-filters-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  background-color: #4299e1;
+  color: white;
+  border-radius: 12px;
+  padding: 0.15rem 0.5rem;
+  margin-left: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .filter-toggle {

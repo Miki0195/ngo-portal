@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useFilterContext } from '../../context/FilterContext';
 import '../../styles/EventsFilter.css';
 
 const EventsFilter = ({ onFilterChange }) => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [startDate, setStartDate] = useState('');
+  const { filters, updateFilters } = useFilterContext();
+  const [searchTerm, setSearchTerm] = useState(filters.searchTerm || '');
+  const [startDate, setStartDate] = useState(filters.startDate ? new Date(filters.startDate).toISOString().split('T')[0] : '');
   const [isExpanded, setIsExpanded] = useState(false);
   const [contentHeight, setContentHeight] = useState('0px');
   const contentRef = useRef(null);
@@ -22,6 +24,17 @@ const EventsFilter = ({ onFilterChange }) => {
       setContentHeight('0px');
     }
   }, [isExpanded]);
+
+  useEffect(() => {
+    if (filters.searchTerm || filters.startDate) {
+      onFilterChange(filters);
+      
+      // Expand the filter panel if filters are active
+      // if ((filters.searchTerm && filters.searchTerm.length > 0) || filters.startDate) {
+      //   setIsExpanded(true);
+      // }
+    }
+  }, [filters, onFilterChange]);
 
   const handleSearchChange = (e) => {
     const value = e.target.value;
@@ -42,10 +55,13 @@ const EventsFilter = ({ onFilterChange }) => {
   };
 
   const applyFilters = (name, date) => {
-    onFilterChange({
+    const newFilters = {
       searchTerm: name,
       startDate: date ? new Date(date) : null
-    });
+    };
+    
+    updateFilters(newFilters);
+    onFilterChange(newFilters);
   };
 
   const toggleExpand = () => {
@@ -55,7 +71,12 @@ const EventsFilter = ({ onFilterChange }) => {
   return (
     <div className="events-filter">
       <div className="filter-header" onClick={toggleExpand}>
-        <h3>Filter Events</h3>
+        <h3>
+          Filter Events
+          {(searchTerm || startDate) && (
+            <span className="active-filters-badge">Active</span>
+          )}
+        </h3>
         <span className={`filter-toggle ${isExpanded ? 'expanded' : ''}`}></span>
       </div>
       

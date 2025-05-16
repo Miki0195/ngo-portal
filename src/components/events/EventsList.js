@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import eventService from '../../services/eventService';
 import authService from '../../services/authService';
 import EventsFilter from './EventsFilter';
+import { useFilterContext } from '../../context/FilterContext';
 import '../../styles/EventsList.css';
 
 const EventsList = () => {
@@ -10,10 +11,7 @@ const EventsList = () => {
   const [filteredEvents, setFilteredEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [filters, setFilters] = useState({
-    searchTerm: '',
-    startDate: null
-  });
+  const { filters } = useFilterContext();
   const user = authService.getCurrentUser();
 
   const fetchEvents = useCallback(async () => {
@@ -28,7 +26,17 @@ const EventsList = () => {
       
       if (response.success) {
         setEvents(response.data);
-        setFilteredEvents(response.data);
+        
+        if (filters.searchTerm || filters.startDate) {
+          const filteredResponse = await eventService.filterEvents(user.ngoId, filters);
+          if (filteredResponse.success) {
+            setFilteredEvents(filteredResponse.data);
+          } else {
+            setFilteredEvents(response.data);
+          }
+        } else {
+          setFilteredEvents(response.data);
+        }
       } else {
         setError(response.error);
       }
@@ -38,7 +46,7 @@ const EventsList = () => {
     } finally {
       setLoading(false);
     }
-  }, [user?.ngoId]); 
+  }, [user?.ngoId, filters]); 
 
   useEffect(() => {
     if (loading) {
@@ -49,7 +57,6 @@ const EventsList = () => {
     };
   }, [fetchEvents, loading]);
 
-  // Apply filters when filters state changes
   useEffect(() => {
     if (!user?.ngoId || !events.length) return;
 
@@ -64,7 +71,7 @@ const EventsList = () => {
   }, [filters, events, user?.ngoId]);
 
   const handleFilterChange = (newFilters) => {
-    setFilters(newFilters);
+    // The filter context will be updated by the EventsFilter component
   };
 
   const formatDate = (dateString) => {
@@ -126,10 +133,19 @@ const EventsList = () => {
     return <div className="events-error">Error: {error}</div>;
   }
 
+  const hasActiveFilters = filters.searchTerm || filters.startDate;
+
   return (
     <div className="events-container">
       <div className="events-header">
-        <h1>Your Events</h1>
+        <h1>
+          Your Events
+          {hasActiveFilters && (
+            <span className="filtered-results-count">
+              {filteredEvents.length} results
+            </span>
+          )}
+        </h1>
         <Link to="/events/create" className="create-event-btn">
           Create New Event
         </Link>
