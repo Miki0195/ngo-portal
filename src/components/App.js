@@ -7,6 +7,7 @@ import EventDetails from './events/EventDetails';
 import CreateEvent from './events/CreateEvent';
 import EditEvent from './events/EditEvent';
 import Layout from './layout/Layout';
+import Profile from '../pages/Profile';
 import authService from '../services/authService';
 import { FilterProvider } from '../context/FilterContext';
 import './App.css';
@@ -61,6 +62,12 @@ function App() {
             <Route path="/events/:eventId/edit" element={
               <ProtectedLayout>
                 <EditEvent />
+              </ProtectedLayout>
+            } />
+            
+            <Route path="/profile" element={
+              <ProtectedLayout>
+                <Profile />
               </ProtectedLayout>
             } />
             
