@@ -8,6 +8,7 @@ import CreateEvent from './events/CreateEvent';
 import EditEvent from './events/EditEvent';
 import Layout from './layout/Layout';
 import Profile from '../pages/Profile';
+import Applications from '../pages/Applications';
 import authService from '../services/authService';
 import { FilterProvider } from '../context/FilterContext';
 import './App.css';
@@ -65,11 +66,17 @@ function App() {
             </ProtectedLayout>
           } />
             
-            <Route path="/profile" element={
-              <ProtectedLayout>
-                <Profile />
-              </ProtectedLayout>
-            } />
+          <Route path="/profile" element={
+            <ProtectedLayout>
+              <Profile />
+            </ProtectedLayout>
+          } />
+
+          <Route path="/applications" element={
+            <ProtectedLayout>
+              <Applications />
+            </ProtectedLayout>
+          } />
           
           {/* Redirect root to login or dashboard based on auth status */}
           <Route path="/" element={

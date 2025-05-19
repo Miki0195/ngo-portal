@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import eventService from '../../services/eventService';
 import { useFilterContext } from '../../context/FilterContext';
+import EventVolunteersModal from './EventVolunteersModal';
+import { FaUsers } from 'react-icons/fa';
 import '../../styles/EventDetails.css';
+import '../../styles/EventVolunteers.css';
 
 const EventDetails = () => {
   const { id } = useParams();
@@ -12,6 +15,7 @@ const EventDetails = () => {
   const [gallery, setGallery] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showVolunteersModal, setShowVolunteersModal] = useState(false);
 
   useEffect(() => {
     const fetchEventDetails = async () => {
@@ -125,6 +129,11 @@ const EventDetails = () => {
     }
   };
 
+  // Toggle volunteers modal
+  const toggleVolunteersModal = () => {
+    setShowVolunteersModal(!showVolunteersModal);
+  };
+
   const hasActiveFilters = filters.searchTerm || filters.startDate;
 
   if (loading) {
@@ -189,7 +198,20 @@ const EventDetails = () => {
 
             <div className="event-info-item">
               <h3>Volunteers</h3>
-              <p><span className="volunteer-status">{event.people_applied || 0} / {event.people_needed || 0}</span> volunteers applied</p>
+              <p>
+                <span className="volunteer-status">
+                  {event.people_applied || 0} / {event.people_needed || 0}
+                </span> 
+                volunteers accepted
+              </p>
+              <button 
+                className="volunteers-button"
+                onClick={toggleVolunteersModal}
+              >
+                <FaUsers />
+                View Volunteers
+                {/* <span className="volunteers-badge">{event.people_applied || 0}</span> */}
+              </button>
             </div>
 
             {event.location && (
@@ -248,6 +270,14 @@ const EventDetails = () => {
           </div>
         )}
       </div>
+
+      {/* Volunteers Modal */}
+      <EventVolunteersModal 
+        show={showVolunteersModal} 
+        eventId={id}
+        eventName={event.eventName}
+        onClose={toggleVolunteersModal}
+      />
     </div>
   );
 };

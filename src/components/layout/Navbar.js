@@ -34,6 +34,9 @@ const Navbar = () => {
           <li className={`nav-item ${isActive('/events')}`}>
             <Link to="/events" className="nav-link">Events</Link>
           </li>
+          <li className={`nav-item ${isActive('/applications')}`}>
+            <Link to="/applications" className="nav-link">Applications</Link>
+          </li>
           <li className={`nav-item ${isActive('/profile')}`}>
             <Link to="/profile" className="nav-link">Profile</Link>
           </li>
