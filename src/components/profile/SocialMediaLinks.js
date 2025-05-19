@@ -2,6 +2,18 @@ import React, { useState, useEffect } from 'react';
 import profileService from '../../services/profileService';
 import '../../styles/Profile.css';
 
+// Helper component to display supported social media platforms
+const SupportedPlatforms = () => {
+  // This must match the backend choices
+  const SUPPORTED_PLATFORMS = ['Facebook', 'Instagram', 'LinkedIn', 'TikTok', 'YouTube'];
+  
+  return (
+    <div className="supported-platforms">
+      <p>Supported platforms: {SUPPORTED_PLATFORMS.join(', ')}</p>
+    </div>
+  );
+};
+
 const SocialMediaLinks = () => {
   const [socialLinks, setSocialLinks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -138,7 +150,7 @@ const SocialMediaLinks = () => {
     setFormData({ platform: '', url: '' });
   };
 
-  // Helper to get platform icon (can be expanded with more platforms)
+  // Helper to get platform icon (can be expanded with more platforms) - Include the real icons
   const getPlatformIcon = (platform) => {
     if (!platform) return '🔗'; // Return default icon if platform is undefined or null
     
@@ -176,6 +188,9 @@ const SocialMediaLinks = () => {
             <p>Error: {error}</p>
           </div>
         )}
+        
+        {/* Show supported platforms */}
+        <SupportedPlatforms />
         
         {/* List of social media links */}
         {socialLinks.length > 0 ? (
@@ -283,6 +298,7 @@ const SocialMediaLinks = () => {
                 placeholder="e.g., Facebook, Instagram, LinkedIn"
                 required
               />
+              <small className="platform-hint">Enter one of the supported platforms (case-insensitive)</small>
             </div>
             
             <div className="profile-form-field">

@@ -2,6 +2,17 @@ import React, { useState, useEffect } from 'react';
 import profileService from '../../services/profileService';
 import '../../styles/Profile.css';
 
+// Helper component to display supported contact types
+const SupportedContactTypes = () => {
+  const SUPPORTED_TYPES = ['Phone', 'E-mail', 'Address'];
+  
+  return (
+    <div className="supported-platforms">
+      <p>Supported contact types: {SUPPORTED_TYPES.join(', ')}</p>
+    </div>
+  );
+};
+
 const ContactInfo = () => {
   const [contactInfo, setContactInfo] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -9,9 +20,9 @@ const ContactInfo = () => {
   const [isAddMode, setIsAddMode] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
   const [formData, setFormData] = useState({
-    type: '',
-    value: '',
-    is_primary: false
+    name: '',
+    contact_type: '',
+    contact_info: '',
   });
 
   // Load contact information
@@ -22,6 +33,7 @@ const ContactInfo = () => {
         const response = await profileService.getContacts();
         
         if (response.success) {
+          console.log('Contact data:', response.data);
           setContactInfo(response.data);
         } else {
           setError(response.error);
@@ -39,10 +51,10 @@ const ContactInfo = () => {
 
   // Handle form input changes
   const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: value
     });
   };
 
@@ -57,7 +69,7 @@ const ContactInfo = () => {
       if (response.success) {
         setContactInfo([...contactInfo, response.data]);
         setIsAddMode(false);
-        setFormData({ type: '', value: '', is_primary: false });
+        setFormData({ name: '', contact_type: '', contact_info: '' });
       } else {
         setError(response.error);
       }
@@ -85,7 +97,7 @@ const ContactInfo = () => {
         updatedInfo[editIndex] = response.data;
         setContactInfo(updatedInfo);
         setEditIndex(null);
-        setFormData({ type: '', value: '', is_primary: false });
+        setFormData({ name: '', contact_type: '', contact_info: '' });
       } else {
         setError(response.error);
       }
@@ -127,9 +139,9 @@ const ContactInfo = () => {
   const startEditing = (index) => {
     setEditIndex(index);
     setFormData({
-      type: contactInfo[index].type,
-      value: contactInfo[index].value,
-      is_primary: contactInfo[index].is_primary
+      name: contactInfo[index].name || '',
+      contact_type: contactInfo[index].contact_type,
+      contact_info: contactInfo[index].contact_info
     });
   };
 
@@ -137,7 +149,7 @@ const ContactInfo = () => {
   const cancelAction = () => {
     setIsAddMode(false);
     setEditIndex(null);
-    setFormData({ type: '', value: '', is_primary: false });
+    setFormData({ name: '', contact_type: '', contact_info: '' });
   };
 
   // Helper to get contact type icon
@@ -145,7 +157,7 @@ const ContactInfo = () => {
     if (!type) return '📋'; // Return default icon if type is undefined or null
     
     const lowercaseType = type.toLowerCase();
-    if (lowercaseType.includes('email')) return '✉️';
+    if (lowercaseType.includes('e-mail') || lowercaseType.includes('email')) return '✉️';
     if (lowercaseType.includes('phone')) return '📱';
     if (lowercaseType.includes('address')) return '🏢';
     if (lowercaseType.includes('website')) return '🌐';
@@ -177,6 +189,9 @@ const ContactInfo = () => {
           </div>
         )}
         
+        {/* Show supported contact types */}
+        <SupportedContactTypes />
+        
         {/* List of contact information */}
         {contactInfo.length > 0 ? (
           <div className="profile-links-list">
@@ -185,47 +200,48 @@ const ContactInfo = () => {
                 {editIndex === index ? (
                   <form onSubmit={handleUpdateSubmit} className="profile-link-edit-form">
                     <div className="profile-form-field">
-                      <label className="profile-form-label" htmlFor="type">
+                      <label className="profile-form-label" htmlFor="name">
+                        Name
+                      </label>
+                      <input
+                        id="name"
+                        name="name"
+                        type="text"
+                        className="profile-form-input"
+                        value={formData.name || ''}
+                        onChange={handleInputChange}
+                        placeholder="e.g., Main Office, Support"
+                      />
+                    </div>
+                    
+                    <div className="profile-form-field">
+                      <label className="profile-form-label" htmlFor="contact_type">
                         Type
                       </label>
                       <input
-                        id="type"
-                        name="type"
+                        id="contact_type"
+                        name="contact_type"
                         type="text"
                         className="profile-form-input"
-                        value={formData.type}
+                        value={formData.contact_type}
                         onChange={handleInputChange}
                         required
                       />
                     </div>
                     
                     <div className="profile-form-field">
-                      <label className="profile-form-label" htmlFor="value">
+                      <label className="profile-form-label" htmlFor="contact_info">
                         Value
                       </label>
                       <input
-                        id="value"
-                        name="value"
+                        id="contact_info"
+                        name="contact_info"
                         type="text"
                         className="profile-form-input"
-                        value={formData.value}
+                        value={formData.contact_info}
                         onChange={handleInputChange}
                         required
                       />
-                    </div>
-                    
-                    <div className="profile-form-field profile-checkbox-field">
-                      <input
-                        id="is_primary"
-                        name="is_primary"
-                        type="checkbox"
-                        className="profile-form-checkbox"
-                        checked={formData.is_primary}
-                        onChange={handleInputChange}
-                      />
-                      <label className="profile-form-label" htmlFor="is_primary">
-                        Primary Contact
-                      </label>
                     </div>
                     
                     <div className="profile-buttons">
@@ -244,13 +260,12 @@ const ContactInfo = () => {
                 ) : (
                   <>
                     <div className="profile-link-info">
-                      <span className="profile-link-icon">{getContactTypeIcon(contact.type)}</span>
+                      <span className="profile-link-icon">{getContactTypeIcon(contact.contact_type)}</span>
                       <span className="profile-link-platform">
-                        {contact.type}
-                        {contact.is_primary && <span className="profile-primary-badge">Primary</span>}
+                        {contact.name ? `${contact.name} (${contact.contact_type || contact.contact_type_display})` : (contact.contact_type || contact.contact_type_display)}
                       </span>
                       <span className="profile-link-url">
-                        {contact.value}
+                        {contact.contact_info}
                       </span>
                     </div>
                     <div className="profile-link-actions">
@@ -282,49 +297,51 @@ const ContactInfo = () => {
         {isAddMode && (
           <form onSubmit={handleAddSubmit} className="profile-form">
             <div className="profile-form-field">
-              <label className="profile-form-label" htmlFor="new-type">
-                Type
+              <label className="profile-form-label" htmlFor="new-name">
+                Name (Optional)
               </label>
               <input
-                id="new-type"
-                name="type"
+                id="new-name"
+                name="name"
                 type="text"
                 className="profile-form-input"
-                value={formData.type}
+                value={formData.name || ''}
                 onChange={handleInputChange}
-                placeholder="e.g., Email, Phone, Address"
-                required
+                placeholder="e.g., Main Office, Support"
               />
             </div>
             
             <div className="profile-form-field">
-              <label className="profile-form-label" htmlFor="new-value">
+              <label className="profile-form-label" htmlFor="new-contact_type">
+                Type
+              </label>
+              <input
+                id="new-contact_type"
+                name="contact_type"
+                type="text"
+                className="profile-form-input"
+                value={formData.contact_type}
+                onChange={handleInputChange}
+                placeholder="e.g., Phone, E-mail"
+                required
+              />
+              <small className="platform-hint">Enter one of the supported contact types (case-insensitive)</small>
+            </div>
+            
+            <div className="profile-form-field">
+              <label className="profile-form-label" htmlFor="new-contact_info">
                 Value
               </label>
               <input
-                id="new-value"
-                name="value"
+                id="new-contact_info"
+                name="contact_info"
                 type="text"
                 className="profile-form-input"
-                value={formData.value}
+                value={formData.contact_info}
                 onChange={handleInputChange}
                 placeholder="Contact information value"
                 required
               />
-            </div>
-            
-            <div className="profile-form-field profile-checkbox-field">
-              <input
-                id="new-is-primary"
-                name="is_primary"
-                type="checkbox"
-                className="profile-form-checkbox"
-                checked={formData.is_primary}
-                onChange={handleInputChange}
-              />
-              <label className="profile-form-label" htmlFor="new-is-primary">
-                Primary Contact
-              </label>
             </div>
             
             <div className="profile-buttons">

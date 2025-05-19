@@ -338,4 +338,25 @@
   .profile-link-info {
     margin-bottom: 8px;
   }
+}
+
+/* Supported platforms styles */
+.supported-platforms {
+  margin: 0 0 15px 0;
+  padding: 8px 12px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.supported-platforms p {
+  margin: 0;
+  color: #555;
+}
+
+.platform-hint {
+  display: block;
+  margin-top: 4px;
+  color: #666;
+  font-size: 0.8rem;
 } 

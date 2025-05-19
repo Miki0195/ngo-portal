@@ -30,61 +30,61 @@ function App() {
     <Router>
       <div className="App">
         <FilterProvider>
-          <Routes>
-            {/* Public routes */}
-            <Route path="/login" element={<Login />} />
-            
-            {/* Protected routes with Layout */}
-            <Route path="/dashboard" element={
-              <ProtectedLayout>
-                <Dashboard />
-              </ProtectedLayout>
-            } />
-            
-            <Route path="/events" element={
-              <ProtectedLayout>
-                <EventsList />
-              </ProtectedLayout>
-            } />
-            
-            <Route path="/events/create" element={
-              <ProtectedLayout>
-                <CreateEvent />
-              </ProtectedLayout>
-            } />
-            
-            <Route path="/events/:id" element={
-              <ProtectedLayout>
-                <EventDetails />
-              </ProtectedLayout>
-            } />
-            
-            <Route path="/events/:eventId/edit" element={
-              <ProtectedLayout>
-                <EditEvent />
-              </ProtectedLayout>
-            } />
+        <Routes>
+          {/* Public routes */}
+          <Route path="/login" element={<Login />} />
+          
+          {/* Protected routes with Layout */}
+          <Route path="/dashboard" element={
+            <ProtectedLayout>
+              <Dashboard />
+            </ProtectedLayout>
+          } />
+          
+          <Route path="/events" element={
+            <ProtectedLayout>
+              <EventsList />
+            </ProtectedLayout>
+          } />
+          
+          <Route path="/events/create" element={
+            <ProtectedLayout>
+              <CreateEvent />
+            </ProtectedLayout>
+          } />
+          
+          <Route path="/events/:id" element={
+            <ProtectedLayout>
+              <EventDetails />
+            </ProtectedLayout>
+          } />
+          
+          <Route path="/events/:eventId/edit" element={
+            <ProtectedLayout>
+              <EditEvent />
+            </ProtectedLayout>
+          } />
             
             <Route path="/profile" element={
               <ProtectedLayout>
                 <Profile />
               </ProtectedLayout>
             } />
-            
-            {/* Redirect root to login or dashboard based on auth status */}
-            <Route path="/" element={
-              authService.isAuthenticated() 
-                ? <Navigate to="/dashboard" /> 
-                : <Navigate to="/login" />
-            } />
-            
-            {/* Catch all route - redirect to dashboard if authenticated */}
-            <Route path="*" element={
-              authService.isAuthenticated() 
-                ? <Navigate to="/dashboard" /> 
-                : <Navigate to="/login" />
-            } />
-          </Routes>
+          
+          {/* Redirect root to login or dashboard based on auth status */}
+          <Route path="/" element={
+            authService.isAuthenticated() 
+              ? <Navigate to="/dashboard" /> 
+              : <Navigate to="/login" />
+          } />
+          
+          {/* Catch all route - redirect to dashboard if authenticated */}
+          <Route path="*" element={
+            authService.isAuthenticated() 
+              ? <Navigate to="/dashboard" /> 
+              : <Navigate to="/login" />
+          } />
+        </Routes>
         </FilterProvider>
       </div>
     </Router>

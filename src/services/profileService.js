@@ -43,8 +43,7 @@ const profileService = {
       const response = await api.post('/api/portal/social-media/create/', socialMediaData);
       return { success: true, data: response.data };
     } catch (error) {
-      const errorMessage = error.response?.data?.error || 'Failed to create social media link';
-      console.error('Error creating social media:', error);
+      const errorMessage = error.response?.data?.error || 'Only use supported platforms.';
       return { success: false, error: errorMessage };
     }
   },
