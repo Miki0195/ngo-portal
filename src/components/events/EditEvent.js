@@ -15,7 +15,6 @@ const EditEvent = () => {
   const [initialLoading, setInitialLoading] = useState(true);
   const user = authService.getCurrentUser();
 
-  // State for form data
   const [formData, setFormData] = useState({
     eventName: '',
     eventDescription: '',
@@ -34,7 +33,6 @@ const EditEvent = () => {
     }
   });
 
-  // Fetch the event data
   useEffect(() => {
     const fetchEventData = async () => {
       try {
@@ -43,17 +41,13 @@ const EditEvent = () => {
         if (response.success) {
           const eventData = response.data;
           
-          // Format the dates for input fields
-          const startDate = eventData.startDate ? eventData.startDate : '';
-          const endDate = eventData.endDate ? eventData.endDate : '';
+          const startDate = eventData.startDate ? formatDateForInput(eventData.startDate) : '';
+          const endDate = eventData.endDate ? formatDateForInput(eventData.endDate) : '';
           
-          // Extract competence names
           const competenceNames = eventData.competences ? 
             eventData.competences.map(comp => typeof comp === 'object' ? comp.name : comp) : [];
 
-          // Extract focus_team IDs
-          const teamIds = eventData.focus_teams ? 
-            extractTeamIds(eventData.focus_teams) : [];
+          const focusTeams = eventData.focus_teams || [];
           
           setFormData({
             eventName: eventData.eventName || '',
@@ -64,7 +58,7 @@ const EditEvent = () => {
             people_needed: eventData.people_needed || 0,
             event_xp: eventData.event_xp || 0,
             main_image_url: eventData.main_image_url || '',
-            focus_teams: teamIds,
+            focus_teams: focusTeams,
             competences: competenceNames,
             location: {
               latitude: eventData.location?.latitude || 0,
@@ -86,105 +80,17 @@ const EditEvent = () => {
     fetchEventData();
   }, [eventId]);
 
-  // Helper function to extract team IDs
-  const extractTeamIds = (teamsData) => {
-    // If the teams data is already an array of IDs, return it
-    if (Array.isArray(teamsData) && typeof teamsData[0] === 'number') {
-      return teamsData;
-    }
+  const formatDateForInput = (dateString) => {
+    if (!dateString) return '';
     
-    // If it's an array of team objects from the API, extract the IDs
-    const teamIds = [];
-    
-    // Loop through the teams to find the matching team in options
-    if (teamOptions.length > 0) {
-      for (const teamName of teamsData) {
-        const team = teamOptions.find(t => t.name === teamName);
-        if (team) {
-          teamIds.push(team.id);
-        }
+    const date = new Date(dateString);
+      if (!isNaN(date.getTime())) {
+        return date.toISOString().substring(0, 16);
       }
-    }
     
-    return teamIds;
+    return '';
   };
 
-  // Helper function to format dates from backend format (DD-MMM-YYYY HH:MM) to input format (YYYY-MM-DDTHH:MM)
-  // const formatDateForInput = (dateString) => {
-    
-  //   // Try to parse the date in various formats
-  //   let date;
-    
-  //   if (typeof dateString === 'string') {
-  //     if (dateString.includes('T')) {
-  //       // It's already in ISO format
-  //       date = new Date(dateString);
-  //     } else if (dateString.includes('-') && dateString.includes(':')) {
-  //       // It's in "DD-MMM-YYYY HH:MM" format (e.g., "12-Jan-2023 14:30")
-  //       const [datePart, timePart] = dateString.split(' ');
-        
-  //       const months = {
-  //         'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5,
-  //         'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
-  //       };
-        
-  //       const [day, month, year] = datePart.split('-');
-  //       const [hours, minutes] = timePart.split(':');
-        
-  //       if (day && months[month] !== undefined && year && hours && minutes) {
-  //         // Use UTC to avoid timezone issues
-  //         date = new Date(Date.UTC(
-  //           parseInt(year, 10),
-  //           months[month],
-  //           parseInt(day, 10),
-  //           parseInt(hours, 10),
-  //           parseInt(minutes, 10)
-  //         ));
-  //         console.log('Parsed datetime components:', { 
-  //           year: parseInt(year, 10),
-  //           month: months[month],
-  //           day: parseInt(day, 10),
-  //           hours: parseInt(hours, 10),
-  //           minutes: parseInt(minutes, 10),
-  //           parsedDate: date.toISOString()
-  //         });
-  //       }
-  //     } else if (dateString.includes('-')) {
-  //       // It's in "DD-MMM-YYYY" format without time (e.g., "12-Jan-2023")
-  //       const [day, month, year] = dateString.split('-');
-        
-  //       const months = {
-  //         'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5,
-  //         'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
-  //       };
-        
-  //       if (day && months[month] !== undefined && year) {
-  //         // Set time to noon (12:00) to ensure it's visible in the form
-  //         date = new Date(Date.UTC(
-  //           parseInt(year, 10),
-  //           months[month],
-  //           parseInt(day, 10),
-  //           12, 0
-  //         ));
-  //       }
-  //     }
-  //   } else {
-  //     return '';
-  //   }
-    
-  //   // If we successfully parsed the date, format it for datetime-local input
-  //   if (date && !isNaN(date.getTime())) {
-  //     // Format as YYYY-MM-DDTHH:MM - using toISOString and then slicing off the seconds and timezone
-  //     // This produces the format required by datetime-local inputs
-  //     const formatted = date.toISOString().slice(0, 16);
-  //     console.log('Formatted date for input:', formatted);
-  //     return formatted;
-  //   }
-    
-  //   return '';
-  // };
-
-  // Fetch team and competence options
   useEffect(() => {
     const fetchFilteringOptions = async () => {
       try {
@@ -208,6 +114,27 @@ const EditEvent = () => {
 
     fetchFilteringOptions();
   }, []);
+
+  useEffect(() => {
+    if (!initialLoading && formData.eventName && teamOptions.length > 0) {
+      if (formData.focus_teams.length > 0 && typeof formData.focus_teams[0] !== 'number') {
+        const teamNames = formData.focus_teams;
+        const teamIds = [];
+        
+        for (const teamName of teamNames) {
+          const team = teamOptions.find(t => t.name === teamName);
+          if (team) {
+            teamIds.push(team.id);
+          }
+        }
+        
+        setFormData(prev => ({
+          ...prev,
+          focus_teams: teamIds
+        }));
+      }
+    }
+  }, [initialLoading, formData.eventName, teamOptions]);
 
   // Marker types from backend constants - we should fetch these as well
   const markerTypes = [
@@ -331,40 +258,25 @@ const EditEvent = () => {
     setError(null);
     
     try {
-      // Clone the form data
       const eventDataToSubmit = JSON.parse(JSON.stringify({
         ...formData,
         organized_by: user.ngoId
       }));
       
-      // Ensure dates are in proper ISO format without timezone adjustments
       if (eventDataToSubmit.startDate) {
-        // Extract date and time components from the datetime-local input
-        // which comes in the format "YYYY-MM-DDTHH:MM"
         const [datePart, timePart] = eventDataToSubmit.startDate.split('T');
-        // Format as YYYY-MM-DD HH:MM:00Z (Z indicates UTC timezone)
         const formattedDate = `${datePart} ${timePart}:00Z`;
-        console.log('Raw startDate from form:', eventDataToSubmit.startDate);
-        console.log('Formatted startDate for submission:', formattedDate);
         eventDataToSubmit.startDate = formattedDate;
       }
       
       if (eventDataToSubmit.endDate) {
-        // Extract date and time components from the datetime-local input
-        // which comes in the format "YYYY-MM-DDTHH:MM"
         const [datePart, timePart] = eventDataToSubmit.endDate.split('T');
-        // Format as YYYY-MM-DD HH:MM:00Z (Z indicates UTC timezone)
         const formattedDate = `${datePart} ${timePart}:00Z`;
-        console.log('Raw endDate from form:', eventDataToSubmit.endDate);
-        console.log('Formatted endDate for submission:', formattedDate);
         eventDataToSubmit.endDate = formattedDate;
       }
       
-      // Ensure arrays are properly formatted
       eventDataToSubmit.focus_teams = Array.isArray(formData.focus_teams) ? formData.focus_teams : [];
       eventDataToSubmit.competences = Array.isArray(formData.competences) ? formData.competences : [];
-      
-      console.log('Event data being submitted:', JSON.stringify(eventDataToSubmit, null, 2));
       
       const response = await eventService.updateEvent(eventId, eventDataToSubmit);
       
@@ -372,9 +284,7 @@ const EditEvent = () => {
         console.log('Update successful:', response.data);
         setSuccess(true);
         
-        // Force reload the page to get fresh data
         setTimeout(() => {
-          // First navigate to events list, then to the specific event to ensure fresh data
           navigate(`/events`);
           setTimeout(() => {
             navigate(`/events/${eventId}`);
@@ -414,17 +324,14 @@ const EditEvent = () => {
     }
   };
 
-  // Handle datetime changes specifically
   const handleDateChange = (e) => {
     const { name, value } = e.target;
     
-    // Create a JavaScript Date from the input value
     const date = new Date(value);
     
-    // Ensure the datetime value is properly stored with time component
     setFormData(prev => ({
       ...prev,
-      [name]: value // Store the complete datetime string from the input
+      [name]: value 
     }));
   };
 

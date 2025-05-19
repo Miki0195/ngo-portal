@@ -51,58 +51,16 @@ const EventDetails = () => {
 
   const formatDate = (dateString) => {
     if (!dateString) return 'Not specified';
-    
-    console.log('Formatting date for display:', dateString);
-    
-    // Handle different date formats
-    let date;
-    
-    // Try parsing as ISO string
-    date = new Date(dateString);
-    
-    // Check if we have a valid date
-    if (isNaN(date.getTime())) {
-      // Try parsing DD-MMM-YYYY format
-      if (typeof dateString === 'string') {
-        const parts = dateString.split('-');
-        if (parts.length === 3) {
-          const months = {
-            'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5,
-            'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
-          };
-          
-          const day = parseInt(parts[0], 10);
-          const month = months[parts[1]];
-          const year = parseInt(parts[2], 10);
-          
-          if (!isNaN(day) && month !== undefined && !isNaN(year)) {
-            date = new Date(year, month, day);
-          }
-        }
-      }
-    }
-    
-    // If we still don't have a valid date, return the original string
-    if (isNaN(date.getTime())) {
-      console.warn('Could not parse date:', dateString);
-      return String(dateString);
-    }
-    
-    // Format the date with time
-    const formatted = date.toLocaleString('en-US', {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit',
-      hour12: true
+      minute: '2-digit'
     });
-    
-    console.log('Formatted date for display:', formatted);
-    return formatted;
   };
 
-  // Helper function to safely render text content from potentially nested objects
   const safeRenderText = (item) => {
     if (item === null || item === undefined) return 'Not specified';
     if (typeof item === 'string') return item;
@@ -129,7 +87,6 @@ const EventDetails = () => {
     }
   };
 
-  // Toggle volunteers modal
   const toggleVolunteersModal = () => {
     setShowVolunteersModal(!showVolunteersModal);
   };
