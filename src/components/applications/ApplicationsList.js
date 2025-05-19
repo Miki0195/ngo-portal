@@ -1,19 +1,7 @@
-import React from 'react';
-import { FaCheckCircle, FaTimesCircle, FaHourglassHalf, FaUserCircle } from 'react-icons/fa';
+import React, { useState, useEffect } from 'react';
+import { FaCheckCircle, FaTimesCircle, FaHourglassHalf, FaUserCircle, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import '../../styles/Applications.css';
 
-/**
- * Component for displaying a list of applications with actions
- * 
- * @param {Object} props
- * @param {Array} props.applications - List of application objects to display
- * @param {Array} props.selectedApplications - IDs of currently selected applications
- * @param {Function} props.onToggleSelection - Handler for toggling selection of an application
- * @param {Function} props.onToggleSelectAll - Handler for toggling selection of all applications
- * @param {Function} props.onViewDetails - Handler for viewing application details
- * @param {Function} props.onUpdateStatus - Handler for updating application status
- * @param {boolean} props.loading - Whether the component is in loading state
- */
 const ApplicationsList = ({
   applications,
   selectedApplications,
@@ -23,12 +11,81 @@ const ApplicationsList = ({
   onUpdateStatus,
   loading
 }) => {
-  // Render status badge
+  const ITEMS_PER_PAGE = 5;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [paginatedApplications, setPaginatedApplications] = useState([]);
+  const [totalPages, setTotalPages] = useState(1);
+
+  useEffect(() => {
+    const total = Math.ceil(applications.length / ITEMS_PER_PAGE);
+    setTotalPages(total || 1); 
+    
+    if (currentPage > total && total > 0) {
+      setCurrentPage(1);
+    }
+    
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const endIndex = startIndex + ITEMS_PER_PAGE;
+    setPaginatedApplications(applications.slice(startIndex, endIndex));
+  }, [applications, currentPage]);
+
+  const handlePageChange = (pageNumber) => {
+    const validPage = Math.max(1, Math.min(pageNumber, totalPages));
+    setCurrentPage(validPage);
+  };
+
+  const areAllCurrentPageItemsSelected = () => {
+    if (paginatedApplications.length === 0) return false;
+    return paginatedApplications.every(app => selectedApplications.includes(app.id));
+  };
+
+  const toggleSelectAllCurrentPage = () => {
+    const allSelected = areAllCurrentPageItemsSelected();
+    
+    if (allSelected) {
+      const currentPageIds = paginatedApplications.map(app => app.id);
+      const newSelection = selectedApplications.filter(id => !currentPageIds.includes(id));
+      onToggleSelectAll(newSelection);
+    } else {
+      const currentPageIds = paginatedApplications.map(app => app.id);
+      const newSelection = [...new Set([...selectedApplications, ...currentPageIds])];
+      onToggleSelectAll(newSelection);
+    }
+  };
+
   const renderStatusBadge = (status, statusDisplay) => (
     <span className={`status-badge status-${status}`}>
       {statusDisplay}
     </span>
   );
+
+  const renderPagination = () => {
+    if (totalPages <= 1) return null;
+    
+    return (
+      <div className="pagination-controls">
+        <button 
+          className="pagination-button"
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          <FaChevronLeft />
+        </button>
+        
+        <div className="pagination-info">
+          Page {currentPage} of {totalPages}
+        </div>
+        
+        <button 
+          className="pagination-button"
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+        >
+          <FaChevronRight />
+        </button>
+      </div>
+    );
+  };
 
   return (
     <div className="applications-table">
@@ -36,8 +93,8 @@ const ApplicationsList = ({
         <div className="select-all-container">
           <input 
             type="checkbox" 
-            checked={selectedApplications.length === applications.length && applications.length > 0}
-            onChange={onToggleSelectAll}
+            checked={areAllCurrentPageItemsSelected() && paginatedApplications.length > 0}
+            onChange={toggleSelectAllCurrentPage}
           />
           <span className="select-all-label">Applications</span>
         </div>
@@ -71,7 +128,7 @@ const ApplicationsList = ({
               </tr>
             </thead>
             <tbody>
-              {applications.map(application => (
+              {paginatedApplications.map(application => (
                 <tr key={application.id}>
                   <td>
                     <input 
@@ -136,6 +193,8 @@ const ApplicationsList = ({
               ))}
             </tbody>
           </table>
+          
+          {renderPagination()}
         </div>
       )}
     </div>
