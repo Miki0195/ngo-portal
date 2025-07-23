@@ -1,6 +1,9 @@
 import api from '../utilities/api';
 import axios from 'axios';
 
+// Get the same base URL that api.js uses
+const baseURL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+
 const authService = {
   login: async (email, password) => {
     try {
@@ -29,7 +32,7 @@ const authService = {
 
   register: async (registrationData) => {
     try {
-      const response = await api.post('api/ngo/register/', registrationData);
+      const response = await api.post('/api/ngo/register/', registrationData);
       
       if (response.data.id) {
         return { 
@@ -93,7 +96,7 @@ const authService = {
     }
     
     try {
-      const response = await axios.post('http://localhost:8000/api/token/refresh/', {
+      const response = await axios.post(`${baseURL}/api/token/refresh/`, {
         refresh: refreshToken
       });
       
