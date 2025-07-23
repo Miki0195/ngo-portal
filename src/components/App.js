@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './auth/Login';
+import Register from '../pages/Register';
 import Dashboard from './dashboard/Dashboard';
 import EventsList from './events/EventsList';
 import EventDetails from './events/EventDetails';
@@ -34,6 +35,7 @@ function App() {
         <Routes>
           {/* Public routes */}
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           
           {/* Protected routes with Layout */}
           <Route path="/dashboard" element={

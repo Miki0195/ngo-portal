@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import NGOProfile from '../components/profile/NGOProfile';
 import SocialMediaLinks from '../components/profile/SocialMediaLinks';
 import ContactInfo from '../components/profile/ContactInfo';
+import NGOGallery from '../components/profile/NGOGallery';
 import '../styles/Profile.css';
 
 const Profile = () => {
@@ -23,6 +24,8 @@ const Profile = () => {
         <SocialMediaLinks />
         <ContactInfo />
       </div>
+      
+      <NGOGallery />
     </div>
   );
 };

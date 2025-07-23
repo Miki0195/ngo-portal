@@ -1,7 +1,10 @@
 import axios from 'axios';
 
+// Use environment variable for API URL, fallback to localhost for development
+const baseURL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+
 const api = axios.create({
-  baseURL: 'http://localhost:8000', // Adjust this to match your Django backend URL
+  baseURL: baseURL,
   headers: {
     'Content-Type': 'application/json'
   },
@@ -27,7 +30,7 @@ const refreshAccessToken = async () => {
   }
 
   try {
-    const response = await axios.post('http://localhost:8000/api/token/refresh/', {
+    const response = await axios.post(`${baseURL}/api/token/refresh/`, {
       refresh: refreshToken
     });
 

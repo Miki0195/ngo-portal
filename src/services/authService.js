@@ -26,6 +26,46 @@ const authService = {
       return { success: false, error: errorMessage };
     }
   },
+
+  register: async (registrationData) => {
+    try {
+      const response = await api.post('api/ngo/register/', registrationData);
+      
+      if (response.data.id) {
+        return { 
+          success: true, 
+          data: response.data,
+          message: response.data.message || 'Registration successful! You can now login with your credentials.'
+        };
+      }
+      
+      return { success: false, error: 'Registration failed' };
+    } catch (error) {
+      // Handle validation errors or server errors
+      if (error.response?.data) {
+        const errorData = error.response.data;
+        
+        // Handle field-specific errors
+        if (typeof errorData === 'object' && !errorData.error) {
+          const fieldErrors = [];
+          Object.keys(errorData).forEach(field => {
+            if (Array.isArray(errorData[field])) {
+              fieldErrors.push(`${field}: ${errorData[field].join(', ')}`);
+            } else if (typeof errorData[field] === 'string') {
+              fieldErrors.push(`${field}: ${errorData[field]}`);
+            }
+          });
+          return { success: false, error: fieldErrors.join('\n') };
+        }
+        
+        // Handle general error messages
+        const errorMessage = errorData.error || errorData.detail || 'Registration failed. Please try again.';
+        return { success: false, error: errorMessage };
+      }
+      
+      return { success: false, error: 'Registration failed. Please check your connection and try again.' };
+    }
+  },
   
   logout: () => {
     localStorage.removeItem('token');

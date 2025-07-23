@@ -25,6 +25,68 @@ const profileService = {
     }
   },
 
+  // Get the NGO's gallery photos
+  getGallery: async () => {
+    try {
+      const response = await api.get('/api/portal/gallery/');
+      return { success: true, data: response.data };
+    } catch (error) {
+      const errorMessage = error.response?.data?.error || 'Failed to fetch gallery photos';
+      console.error('Error fetching gallery photos:', error);
+      return { success: false, error: errorMessage };
+    }
+  },
+
+  // Upload new photos to the gallery
+  uploadGalleryPhotos: async (files, caption = '') => {
+    try {
+      const formData = new FormData();
+      
+      // Append each file
+      files.forEach(file => {
+        formData.append('file', file);
+      });
+      
+      // Add caption if provided
+      if (caption) {
+        formData.append('caption', caption);
+      }
+      
+      // Get current user's NGO ID
+      const userString = localStorage.getItem('user');
+      if (!userString) {
+        return { success: false, error: 'User not authenticated' };
+      }
+      
+      const user = JSON.parse(userString);
+      formData.append('ngo_id', user.ngoId);
+      
+      const response = await api.post('/api/ngo/photos/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      
+      return { success: true, data: response.data };
+    } catch (error) {
+      const errorMessage = error.response?.data?.error || 'Failed to upload photos';
+      console.error('Error uploading photos:', error);
+      return { success: false, error: errorMessage };
+    }
+  },
+
+  // Delete a gallery photo
+  deleteGalleryPhoto: async (photoId) => {
+    try {
+      await api.delete(`/api/portal/gallery/${photoId}/`);
+      return { success: true };
+    } catch (error) {
+      const errorMessage = error.response?.data?.error || 'Failed to delete photo';
+      console.error('Error deleting photo:', error);
+      return { success: false, error: errorMessage };
+    }
+  },
+
   // Get the NGO's social media links
   getSocialMedia: async () => {
     try {

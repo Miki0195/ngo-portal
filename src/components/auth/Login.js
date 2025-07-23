@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import authService from '../../services/authService';
 import '../../styles/Login.css';
 
@@ -7,6 +7,7 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -21,11 +22,19 @@ const Login = () => {
       const newUrl = window.location.pathname;
       window.history.replaceState({}, document.title, newUrl);
     }
+
+    // Check for success message from registration
+    if (location.state?.message) {
+      setSuccess(location.state.message);
+      // Clear the state to prevent showing the message on refresh
+      window.history.replaceState({}, document.title, location.pathname);
+    }
   }, [location]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setSuccess('');
     setLoading(true);
     
     if (!email || !password) {
@@ -56,6 +65,7 @@ const Login = () => {
         <h1 className="login-title">NGO Portal Login</h1>
         <form className="login-form" onSubmit={handleSubmit}>
           {error && <div className="error-message">{error}</div>}
+          {success && <div className="success-message">{success}</div>}
           
           <div className="form-group">
             <label htmlFor="email">Email</label>
@@ -88,6 +98,10 @@ const Login = () => {
           >
             {loading ? 'Logging in...' : 'Login'}
           </button>
+
+          <div className="form-footer">
+            <p>Don't have an account? <Link to="/register" className="register-link">Register your NGO</Link></p>
+          </div>
         </form>
       </div>
     </div>

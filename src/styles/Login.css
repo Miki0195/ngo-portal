@@ -83,4 +83,39 @@
   border-radius: 4px;
   margin-bottom: 20px;
   font-size: 14px;
+}
+
+.success-message {
+  background-color: #c6f6d5;
+  color: #22543d;
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  border-left: 4px solid #38a169;
+}
+
+.form-footer {
+  text-align: center;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.form-footer p {
+  color: #718096;
+  font-size: 14px;
+  margin: 0;
+}
+
+.register-link {
+  color: #4299e1;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.register-link:hover {
+  color: #3182ce;
+  text-decoration: underline;
 } 

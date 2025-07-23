@@ -1,13 +1,13 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Login from "./pages/Login";
+import Login from "./components/auth/Login";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
-import Layout from "./components/Layout";
+import Layout from "./components/layout/Layout";
 import ProtectedRoute from "./components/ProtectedRoute";
-import Dashboard from "./pages/Dashboard";
-import Events from "./pages/Events";
+import Dashboard from "./components/dashboard/Dashboard";
+import EventsList from "./components/events/EventsList";
 import Applications from "./pages/Applications";
 
 function App() {
@@ -30,7 +30,7 @@ function App() {
             >
               <Route path="/" element={<Navigate replace to="/dashboard" />} />
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/events" element={<Events />} />
+              <Route path="/events" element={<EventsList />} />
               <Route path="/applications" element={<Applications />} />
             </Route>
           </Routes>
