@@ -4,6 +4,9 @@ import eventService from '../../services/eventService';
 import authService from '../../services/authService';
 import '../../styles/CreateEvent.css';
 
+// Get the base URL from environment variable
+const baseURL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+
 const EditEvent = () => {
   const navigate = useNavigate();
   const { eventId } = useParams();
@@ -94,7 +97,7 @@ const EditEvent = () => {
   useEffect(() => {
     const fetchFilteringOptions = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/events/filters/');
+        const response = await fetch(`${baseURL}/api/events/filters/`);
         if (response.ok) {
           const data = await response.json();
           

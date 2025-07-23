@@ -13,6 +13,9 @@ const Login = () => {
   const location = useLocation();
 
   useEffect(() => {
+    // Debug: Log the API URL being used
+    console.log('API URL:', process.env.REACT_APP_API_URL || 'http://localhost:8000');
+    
     const params = new URLSearchParams(location.search);
     const errorParam = params.get('error');
     
@@ -43,8 +46,12 @@ const Login = () => {
       return;
     }
     
+    console.log('Attempting login with:', { email, baseURL: process.env.REACT_APP_API_URL });
+    
     try {
       const response = await authService.login(email, password);
+      
+      console.log('Login response:', response);
       
       if (response.success) {
         navigate('/dashboard');
@@ -52,8 +59,8 @@ const Login = () => {
         setError(response.error);
       }
     } catch (err) {
+      console.error('Login error:', err);
       setError('An unexpected error occurred. Please try again.');
-      console.error(err);
     } finally {
       setLoading(false);
     }
