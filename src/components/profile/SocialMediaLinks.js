@@ -1,21 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import profileService from '../../services/profileService';
+import { 
+  BsFacebook, 
+  BsInstagram, 
+  BsLinkedin, 
+  BsYoutube, 
+  BsTiktok,
+  BsTwitterX,
+  BsLink45Deg
+} from 'react-icons/bs';
 import '../../styles/Profile.css';
-
-// Helper component to display supported social media platforms
-const SupportedPlatforms = () => {
-  // This must match the backend choices
-  const SUPPORTED_PLATFORMS = ['Facebook', 'Instagram', 'LinkedIn', 'TikTok', 'YouTube'];
-  
-  return (
-    <div className="supported-platforms">
-      <p>Supported platforms: {SUPPORTED_PLATFORMS.join(', ')}</p>
-    </div>
-  );
-};
 
 const SocialMediaLinks = () => {
   const [socialLinks, setSocialLinks] = useState([]);
+  const [platformChoices, setPlatformChoices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isAddMode, setIsAddMode] = useState(false);
@@ -25,27 +23,46 @@ const SocialMediaLinks = () => {
     url: ''
   });
 
-  // Load social media links
+  // Load social media links and platform choices
   useEffect(() => {
-    const fetchSocialLinks = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await profileService.getSocialMedia();
         
-        if (response.success) {
-          setSocialLinks(response.data);
+        // Fetch both social links and platform choices
+        const [socialResponse, choicesResponse] = await Promise.all([
+          profileService.getSocialMedia(),
+          profileService.getSocialMediaChoices()
+        ]);
+        
+        if (socialResponse.success) {
+          setSocialLinks(socialResponse.data);
         } else {
-          setError(response.error);
+          setError(socialResponse.error);
+        }
+
+        if (choicesResponse.success) {
+          setPlatformChoices(choicesResponse.data);
+        } else {
+          console.error('Failed to load platform choices:', choicesResponse.error);
+          // Fallback to hardcoded choices if API fails
+          setPlatformChoices([
+            { value: 'Facebook', label: 'Facebook', display_name: 'Facebook' },
+            { value: 'Instagram', label: 'Instagram', display_name: 'Instagram' },
+            { value: 'LinkedIn', label: 'LinkedIn', display_name: 'LinkedIn' },
+            { value: 'TikTok', label: 'TikTok', display_name: 'TikTok' },
+            { value: 'YouTube', label: 'YouTube', display_name: 'YouTube' }
+          ]);
         }
       } catch (err) {
-        setError('Failed to load social media links. Please try again later.');
+        setError('Failed to load social media data. Please try again later.');
         console.error(err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchSocialLinks();
+    fetchData();
   }, []);
 
   // Handle form input changes
@@ -150,18 +167,36 @@ const SocialMediaLinks = () => {
     setFormData({ platform: '', url: '' });
   };
 
-  // Helper to get platform icon (can be expanded with more platforms) - Include the real icons
+  // Helper to get platform icon with proper React Bootstrap Icons
   const getPlatformIcon = (platform) => {
-    if (!platform) return '🔗'; // Return default icon if platform is undefined or null
+    if (!platform) return <BsLink45Deg className="social-icon default" />; // Default link icon
     
     const lowercasePlatform = platform.toLowerCase();
-    if (lowercasePlatform.includes('facebook')) return '📘';
-    if (lowercasePlatform.includes('twitter') || lowercasePlatform.includes('x')) return '🐦';
-    if (lowercasePlatform.includes('instagram')) return '📷';
-    if (lowercasePlatform.includes('linkedin')) return '💼';
-    if (lowercasePlatform.includes('youtube')) return '🎥';
-    if (lowercasePlatform.includes('tiktok')) return '🎵';
-    return '🔗';
+    
+    if (lowercasePlatform.includes('facebook')) return <BsFacebook className="social-icon facebook" />;
+    if (lowercasePlatform.includes('twitter') || lowercasePlatform.includes('x')) return <BsTwitterX className="social-icon twitter" />;
+    if (lowercasePlatform.includes('instagram')) return <BsInstagram className="social-icon instagram" />;
+    if (lowercasePlatform.includes('linkedin')) return <BsLinkedin className="social-icon linkedin" />;
+    if (lowercasePlatform.includes('youtube')) return <BsYoutube className="social-icon youtube" />;
+    if (lowercasePlatform.includes('tiktok')) return <BsTiktok className="social-icon tiktok" />;
+    
+    return <BsLink45Deg className="social-icon default" />; // Default for unknown platforms
+  };
+
+  // Helper to get icon component for dropdown options (smaller size)
+  const getPlatformIconSmall = (platform) => {
+    if (!platform) return <BsLink45Deg className="dropdown-icon" />;
+    
+    const lowercasePlatform = platform.toLowerCase();
+    
+    if (lowercasePlatform.includes('facebook')) return <BsFacebook className="dropdown-icon facebook" />;
+    if (lowercasePlatform.includes('twitter') || lowercasePlatform.includes('x')) return <BsTwitterX className="dropdown-icon twitter" />;
+    if (lowercasePlatform.includes('instagram')) return <BsInstagram className="dropdown-icon instagram" />;
+    if (lowercasePlatform.includes('linkedin')) return <BsLinkedin className="dropdown-icon linkedin" />;
+    if (lowercasePlatform.includes('youtube')) return <BsYoutube className="dropdown-icon youtube" />;
+    if (lowercasePlatform.includes('tiktok')) return <BsTiktok className="dropdown-icon tiktok" />;
+    
+    return <BsLink45Deg className="dropdown-icon" />;
   };
 
   if (loading && socialLinks.length === 0) {
@@ -189,9 +224,6 @@ const SocialMediaLinks = () => {
           </div>
         )}
         
-        {/* Show supported platforms */}
-        <SupportedPlatforms />
-        
         {/* List of social media links */}
         {socialLinks.length > 0 ? (
           <div className="profile-links-list">
@@ -203,15 +235,21 @@ const SocialMediaLinks = () => {
                       <label className="profile-form-label" htmlFor="platform">
                         Platform
                       </label>
-                      <input
+                      <select
                         id="platform"
                         name="platform"
-                        type="text"
                         className="profile-form-input"
                         value={formData.platform}
                         onChange={handleInputChange}
                         required
-                      />
+                      >
+                        <option value="">Select Platform</option>
+                        {platformChoices.map((choice) => (
+                          <option key={choice.value} value={choice.value}>
+                            {choice.display_name}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                     
                     <div className="profile-form-field">
@@ -288,17 +326,21 @@ const SocialMediaLinks = () => {
               <label className="profile-form-label" htmlFor="new-platform">
                 Platform
               </label>
-              <input
+              <select
                 id="new-platform"
                 name="platform"
-                type="text"
                 className="profile-form-input"
                 value={formData.platform}
                 onChange={handleInputChange}
-                placeholder="e.g., Facebook, Instagram, LinkedIn"
                 required
-              />
-              <small className="platform-hint">Enter one of the supported platforms (case-insensitive)</small>
+              >
+                <option value="">Select Platform</option>
+                {platformChoices.map((choice) => (
+                  <option key={choice.value} value={choice.value}>
+                    {choice.display_name}
+                  </option>
+                ))}
+              </select>
             </div>
             
             <div className="profile-form-field">

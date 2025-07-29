@@ -100,6 +100,76 @@
   background-color: #cbd5e0;
 }
 
+.location-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: #e2e8f0;
+}
+
+.location-button:disabled:hover {
+  background-color: #e2e8f0;
+}
+
+/* Container for location buttons */
+.location-buttons-container {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.location-buttons-container .location-button {
+  margin-top: 0;
+  flex: 1;
+  min-width: 200px;
+}
+
+@media (max-width: 768px) {
+  .location-buttons-container {
+    flex-direction: column;
+  }
+  
+  .location-buttons-container .location-button {
+    width: 100%;
+    min-width: auto;
+  }
+}
+
+/* Location help section */
+.location-help {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background-color: #f7fafc;
+  border-radius: 4px;
+  border-left: 3px solid #4299e1;
+}
+
+.location-help p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #4a5568;
+  line-height: 1.4;
+}
+
+.coordinates-link {
+  color: #4299e1;
+  text-decoration: none;
+  font-weight: 500;
+  margin-left: 0.5rem;
+  transition: color 0.2s;
+}
+
+.coordinates-link:hover {
+  color: #3182ce;
+  text-decoration: underline;
+}
+
+.coordinates-link:focus {
+  outline: 2px solid #4299e1;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
 .image-preview {
   margin-top: 1rem;
   border-radius: 4px;
@@ -238,4 +308,49 @@
   padding: 3rem;
   font-size: 1.2rem;
   color: #4a5568;
+} 
+
+/* Volunteer toggle styles */
+.volunteer-toggle-section {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background-color: #f7fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+}
+
+.toggle-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 500;
+  color: #4a5568;
+}
+
+.toggle-label input[type="checkbox"] {
+  margin-right: 0.75rem;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.toggle-text {
+  user-select: none;
+}
+
+.volunteer-input {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: white;
+  border: 1px solid #cbd5e0;
+  border-radius: 4px;
+}
+
+.volunteer-input label {
+  font-weight: 500;
+  color: #2d3748;
+}
+
+.volunteer-input input {
+  margin-top: 0.5rem;
 } 

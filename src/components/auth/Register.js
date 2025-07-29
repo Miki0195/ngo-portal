@@ -29,7 +29,8 @@ const Register = () => {
     { value: 'Volunteering', label: 'Volunteering' },
     { value: 'Events', label: 'Events' },
     { value: 'Donations', label: 'Donations' },
-    { value: 'Petitions', label: 'Petitions' }
+    { value: 'Petitions', label: 'Petitions' },
+    { value: 'Merch or Products', label: 'Merch or Products' }
   ];
 
   const handleInputChange = (e) => {
@@ -175,7 +176,7 @@ const Register = () => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="registration_number">Registration Number</label>
+                <label htmlFor="registration_number">Registration Number (matična)</label>
                 <input
                   type="text"
                   id="registration_number"

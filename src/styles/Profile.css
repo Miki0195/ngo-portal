@@ -265,6 +265,98 @@
   margin-right: 10px;
 }
 
+/* Social Media Icon Styles */
+.social-icon {
+  font-size: 1.2rem;
+  margin-right: 10px;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.social-icon:hover {
+  transform: scale(1.1);
+}
+
+/* Brand-specific colors */
+.social-icon.facebook {
+  color: #1877F2;
+}
+
+.social-icon.instagram {
+  color: #E4405F;
+}
+
+.social-icon.linkedin {
+  color: #0A66C2;
+}
+
+.social-icon.youtube {
+  color: #FF0000;
+}
+
+.social-icon.tiktok {
+  color: #000000;
+}
+
+.social-icon.twitter {
+  color: #000000; /* X/Twitter new branding */
+}
+
+.social-icon.default {
+  color: #6B7280; /* Gray for unknown platforms */
+}
+
+/* Contact Icon Styles */
+.contact-icon {
+  font-size: 1.2rem;
+  margin-right: 10px;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.contact-icon:hover {
+  transform: scale(1.1);
+}
+
+/* Contact type specific colors */
+.contact-icon.email {
+  color: #DC2626; /* Red for email */
+}
+
+.contact-icon.phone {
+  color: #059669; /* Green for phone */
+}
+
+.contact-icon.address {
+  color: #7C3AED; /* Purple for address */
+}
+
+.contact-icon.website {
+  color: #2563EB; /* Blue for website */
+}
+
+.contact-icon.default {
+  color: #6B7280; /* Gray for unknown types */
+}
+
+/* Dropdown Icon Styles (smaller icons for select options) */
+.dropdown-icon {
+  font-size: 0.9rem;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.dropdown-icon.facebook { color: #1877F2; }
+.dropdown-icon.instagram { color: #E4405F; }
+.dropdown-icon.linkedin { color: #0A66C2; }
+.dropdown-icon.youtube { color: #FF0000; }
+.dropdown-icon.tiktok { color: #000000; }
+.dropdown-icon.twitter { color: #000000; }
+
+/* Contact dropdown icon colors */
+.dropdown-icon.email { color: #DC2626; }
+.dropdown-icon.phone { color: #059669; }
+.dropdown-icon.address { color: #7C3AED; }
+.dropdown-icon.website { color: #2563EB; }
+
 .profile-link-platform {
   font-weight: 500;
   margin-right: 10px;
@@ -359,4 +451,105 @@
   margin-top: 4px;
   color: #666;
   font-size: 0.8rem;
+}
+
+/* Phone Input Styles */
+.phone-input-container {
+  position: relative;
+}
+
+.phone-input {
+  width: 100%;
+}
+
+.phone-input .PhoneInputInput {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 0 4px 4px 0;
+  border-left: none;
+  font-size: 0.95rem;
+  background-color: white;
+  font-family: inherit;
+}
+
+.phone-input .PhoneInputInput:focus {
+  outline: none;
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+.phone-input .PhoneInputCountry {
+  display: flex;
+  align-items: center;
+}
+
+.phone-input .PhoneInputCountrySelect {
+  border: 1px solid #ddd;
+  border-radius: 4px 0 0 4px;
+  border-right: none;
+  padding: 10px 8px;
+  background-color: #f8f9fa;
+  font-size: 0.95rem;
+  cursor: pointer;
+  min-width: 80px;
+}
+
+.phone-input .PhoneInputCountrySelect:focus {
+  outline: none;
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+.phone-input .PhoneInputCountrySelectArrow {
+  color: #666;
+  margin-left: 6px;
+  font-size: 0.7rem;
+}
+
+.phone-input .PhoneInputCountryIcon {
+  margin-right: 6px;
+}
+
+/* Make sure phone input container matches other form inputs */
+.phone-input-container .PhoneInput {
+  display: flex;
+  width: 100%;
+}
+
+/* Validation Error Styles */
+.validation-error {
+  display: block;
+  margin-top: 4px;
+  color: #d32f2f;
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 2px 0;
+}
+
+/* Enhanced form field spacing for validation */
+.profile-form-field:has(.validation-error) {
+  margin-bottom: 20px;
+}
+
+/* Error state styling for inputs */
+.profile-form-field:has(.validation-error) .profile-form-input {
+  border-color: #d32f2f;
+}
+
+.profile-form-field:has(.validation-error) .phone-input .PhoneInputInput {
+  border-color: #d32f2f;
+}
+
+.profile-form-field:has(.validation-error) .phone-input .PhoneInputCountrySelect {
+  border-color: #d32f2f;
+} 
+
+/* Input hint styles */
+.input-hint {
+  display: block;
+  margin-top: 4px;
+  color: #666;
+  font-size: 0.75rem;
+  font-style: italic;
 } 

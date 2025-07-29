@@ -108,11 +108,16 @@ const EventsList = () => {
             ? `${event.eventDescription.substring(0, 100)}...`
             : event.eventDescription || 'No description available'}
         </p>
-        <div className="event-status">
-          <span className="volunteers">
-            {event.people_applied || 0} / {event.people_needed || 0} volunteers
-          </span>
-        </div>
+        
+        {/* Only show volunteer status if people_needed > 0 */}
+        {event.people_needed > 0 && (
+          <div className="event-status">
+            <span className="volunteers">
+              {event.people_applied || 0} / {event.people_needed || 0} volunteers
+            </span>
+          </div>
+        )}
+        
         <div className="event-actions">
           <Link to={`/events/${event.id}`} className="view-btn">
             View Details

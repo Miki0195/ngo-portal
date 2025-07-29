@@ -134,6 +134,18 @@ const profileService = {
     }
   },
 
+  // Get available social media platform choices
+  getSocialMediaChoices: async () => {
+    try {
+      const response = await api.get('/api/portal/social-media/choices/');
+      return { success: true, data: response.data.data };
+    } catch (error) {
+      const errorMessage = error.response?.data?.error || 'Failed to fetch social media platform choices';
+      console.error('Error fetching social media choices:', error);
+      return { success: false, error: errorMessage };
+    }
+  },
+
   // Get the NGO's contact information
   getContacts: async () => {
     try {
@@ -178,6 +190,18 @@ const profileService = {
     } catch (error) {
       const errorMessage = error.response?.data?.error || 'Failed to delete contact';
       console.error('Error deleting contact:', error);
+      return { success: false, error: errorMessage };
+    }
+  },
+
+  // Get available contact type choices
+  getContactTypeChoices: async () => {
+    try {
+      const response = await api.get('/api/portal/contacts/choices/');
+      return { success: true, data: response.data.data };
+    } catch (error) {
+      const errorMessage = error.response?.data?.error || 'Failed to fetch contact type choices';
+      console.error('Error fetching contact type choices:', error);
       return { success: false, error: errorMessage };
     }
   }

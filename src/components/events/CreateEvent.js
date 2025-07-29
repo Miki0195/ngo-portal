@@ -35,6 +35,10 @@ const CreateEvent = () => {
     }
   });
 
+  // State for optional volunteers toggle (for Event type)
+  const [showVolunteersForEvent, setShowVolunteersForEvent] = useState(false);
+  const [isGeocodingLoading, setIsGeocodingLoading] = useState(false);
+
   // Fetch team and competence options
   useEffect(() => {
     const fetchFilteringOptions = async () => {
@@ -63,8 +67,7 @@ const CreateEvent = () => {
   // Marker types from backend constants - we should fetch these as well
   const markerTypes = [
     { id: 1, name: "Volunteering opportunity" },
-    { id: 2, name: "Sustainable event" },
-    { id: 3, name: "Donation" }
+    { id: 2, name: "Event" },
   ];
 
   const handleChange = (e) => {
@@ -81,6 +84,20 @@ const CreateEvent = () => {
             : value
         }
       }));
+      
+      // Trigger reverse geocoding when lat/lng is manually changed
+      if ((locationField === 'latitude' || locationField === 'longitude') && value) {
+        // Debounce the geocoding call
+        clearTimeout(window.geocodingTimeout);
+        window.geocodingTimeout = setTimeout(() => {
+          const newLat = locationField === 'latitude' ? parseFloat(value) : formData.location.latitude;
+          const newLng = locationField === 'longitude' ? parseFloat(value) : formData.location.longitude;
+          
+          if (newLat && newLng && newLat !== 0 && newLng !== 0) {
+            reverseGeocode(newLat, newLng);
+          }
+        }, 1000); // Wait 1 second after user stops typing
+      }
     } else {
       setFormData(prev => ({
         ...prev,
@@ -88,6 +105,15 @@ const CreateEvent = () => {
           ? parseInt(value, 10) || 0
           : value
       }));
+      
+      // Reset volunteer settings when changing event type
+      if (name === 'markerType') {
+        const newMarkerType = parseInt(value, 10);
+        if (newMarkerType === 2) { // Event type
+          setShowVolunteersForEvent(false);
+          setFormData(prev => ({ ...prev, people_needed: 0 }));
+        }
+      }
     }
   };
 
@@ -169,7 +195,8 @@ const CreateEvent = () => {
       errors.push('Valid latitude and longitude are required');
     }
     
-    if (formData.people_needed < 0) {
+    // Validate people_needed for Volunteering opportunities OR when enabled for Events
+    if ((formData.markerType === 1 || (formData.markerType === 2 && showVolunteersForEvent)) && formData.people_needed < 0) {
       errors.push('Number of people needed must be 0 or greater');
     }
 
@@ -218,18 +245,68 @@ const CreateEvent = () => {
     }
   };
 
-  const getUserLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
+  const reverseGeocode = async (latitude, longitude) => {
+    setIsGeocodingLoading(true);
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`
+      );
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data && data.display_name) {
+          // Create a formatted address
+          const address = data.address || {};
+          const addressParts = [];
+          
+          // Build address in format: Street Number, Street, City, Postal Code, Country
+          if (address.house_number) addressParts.push(address.house_number);
+          if (address.road) addressParts.push(address.road);
+          if (address.city || address.town || address.village) {
+            addressParts.push(address.city || address.town || address.village);
+          }
+          if (address.postcode) addressParts.push(address.postcode);
+          if (address.country) addressParts.push(address.country);
+          
+          const formattedAddress = addressParts.length > 0 
+            ? addressParts.join(', ')
+            : data.display_name;
+          
           setFormData(prev => ({
             ...prev,
             location: {
               ...prev.location,
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude
+              text: formattedAddress
             }
           }));
+        }
+      }
+    } catch (error) {
+      console.error('Error during reverse geocoding:', error);
+      // Don't show error to user, just log it
+    } finally {
+      setIsGeocodingLoading(false);
+    }
+  };
+
+  const getUserLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          
+          setFormData(prev => ({
+            ...prev,
+            location: {
+              ...prev.location,
+              latitude: lat,
+              longitude: lng
+            }
+          }));
+          
+          // Automatically get address for current location
+          reverseGeocode(lat, lng);
         },
         (error) => {
           console.error('Error getting location:', error);
@@ -418,32 +495,102 @@ const CreateEvent = () => {
               </div>
             </div>
             
-            <button 
-              type="button" 
-              className="location-button"
-              onClick={getUserLocation}
-            >
-              Use My Current Location
-            </button>
+            <div className="location-buttons-container">
+              <button 
+                type="button" 
+                className="location-button"
+                onClick={getUserLocation}
+              >
+                Use My Current Location
+              </button>
+              
+              <button 
+                type="button" 
+                className="location-button"
+                onClick={() => {
+                  if (formData.location.latitude && formData.location.longitude && 
+                      formData.location.latitude !== 0 && formData.location.longitude !== 0) {
+                    reverseGeocode(formData.location.latitude, formData.location.longitude);
+                  } else {
+                    alert('Please enter valid latitude and longitude coordinates first.');
+                  }
+                }}
+                disabled={isGeocodingLoading}
+              >
+                {isGeocodingLoading ? 'Getting Address...' : 'Get Address from Coordinates'}
+              </button>
+            </div>
+            
+            <div className="location-help">
+              <p>
+                Need coordinates for a specific location? 
+                <a 
+                  href="https://www.gps-coordinates.net/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="coordinates-link"
+                >
+                  Find latitude and longitude here →
+                </a>
+              </p>
+            </div>
           </div>
 
           <div className="form-section">
             <h2>Additional Details</h2>
             
-            <div className="form-group">
-              <label htmlFor="people_needed">Number of Volunteers Needed</label>
-              <input
-                type="number"
-                min="0"
-                id="people_needed"
-                name="people_needed"
-                value={formData.people_needed}
-                onChange={handleChange}
-                required
-              />
-            </div>
+            {/* Always show for Volunteering opportunities */}
+            {formData.markerType === 1 && (
+              <div className="form-group">
+                <label htmlFor="people_needed">Number of Volunteers Needed*</label>
+                <input
+                  type="number"
+                  min="0"
+                  id="people_needed"
+                  name="people_needed"
+                  value={formData.people_needed}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            )}
             
-            <div className="form-group">
+            {/* Optional toggle for Events */}
+            {formData.markerType === 2 && (
+              <div className="form-group">
+                <div className="volunteer-toggle-section">
+                  <label className="toggle-label">
+                    <input
+                      type="checkbox"
+                      checked={showVolunteersForEvent}
+                      onChange={(e) => {
+                        setShowVolunteersForEvent(e.target.checked);
+                        if (!e.target.checked) {
+                          setFormData(prev => ({ ...prev, people_needed: 0 }));
+                        }
+                      }}
+                    />
+                    <span className="toggle-text">This event needs volunteers</span>
+                  </label>
+                </div>
+                
+                {showVolunteersForEvent && (
+                  <div className="form-group volunteer-input">
+                    <label htmlFor="people_needed">Number of Volunteers Needed</label>
+                    <input
+                      type="number"
+                      min="0"
+                      id="people_needed"
+                      name="people_needed"
+                      value={formData.people_needed}
+                      onChange={handleChange}
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+            
+            {/* <div className="form-group">
               <label htmlFor="event_xp">Experience Points (XP) for Event</label>
               <input
                 type="number"
@@ -454,7 +601,7 @@ const CreateEvent = () => {
                 onChange={handleChange}
                 required
               />
-            </div>
+            </div> */}
             
             <div className="form-group">
               <label htmlFor="main_image_url">Image URL</label>

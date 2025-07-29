@@ -153,23 +153,26 @@ const EventDetails = () => {
               <p><strong>End:</strong> {formatDate(event.endDate)}</p>
             </div>
 
-            <div className="event-info-item">
-              <h3>Volunteers</h3>
-              <p>
-                <span className="volunteer-status">
-                  {event.people_applied || 0} / {event.people_needed || 0}
-                </span> 
-                volunteers accepted
-              </p>
-              <button 
-                className="volunteers-button"
-                onClick={toggleVolunteersModal}
-              >
-                <FaUsers />
-                View Volunteers
-                {/* <span className="volunteers-badge">{event.people_applied || 0}</span> */}
-              </button>
-            </div>
+            {/* Only show volunteers section if people_needed > 0 */}
+            {event.people_needed > 0 && (
+              <div className="event-info-item">
+                <h3>Volunteers</h3>
+                <p>
+                  <span className="volunteer-status">
+                    {event.people_applied || 0} / {event.people_needed || 0}
+                  </span> 
+                  volunteers accepted
+                </p>
+                <button 
+                  className="volunteers-button"
+                  onClick={toggleVolunteersModal}
+                >
+                  <FaUsers />
+                  View Volunteers
+                  {/* <span className="volunteers-badge">{event.people_applied || 0}</span> */}
+                </button>
+              </div>
+            )}
 
             {event.location && (
               <div className="event-info-item">
