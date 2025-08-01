@@ -1,5 +1,6 @@
 import React from 'react';
 import '../../styles/Applications.css';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Component for performing bulk actions on selected applications
@@ -18,6 +19,7 @@ const ApplicationBulkActions = ({
   onPerformBulkAction,
   loading
 }) => {
+  const { t } = useTranslation();
   // Don't render if no applications are selected
   if (!selectedApplications || selectedApplications.length === 0) {
     return null;
@@ -26,7 +28,7 @@ const ApplicationBulkActions = ({
   return (
     <div className="bulk-actions-card">
       <div className="bulk-count">
-        <strong>{selectedApplications.length}</strong> applications selected
+        <strong>{selectedApplications.length}</strong> {t('applications.applicationsSelected')}
       </div>
       <div className="bulk-controls">
         <select 
@@ -34,10 +36,10 @@ const ApplicationBulkActions = ({
           value={bulkAction}
           onChange={(e) => onBulkActionChange(e.target.value)}
         >
-          <option value="">Select Action</option>
-          <option value="accepted">Accept</option>
-          <option value="waitlisted">Waitlist</option>
-          <option value="applied">Reset to Applied</option>
+          <option value="">{t('applications.selectAction')}</option>
+          <option value="accepted">{t('applications.accept')}</option>
+          <option value="waitlisted">{t('applications.waitlist')}</option>
+          <option value="applied">{t('applications.resetToApplied')}</option>
         </select>
         <button 
           className="btn btn-primary"
@@ -50,7 +52,7 @@ const ApplicationBulkActions = ({
               <div className="loading-dot"></div>
               <div className="loading-dot"></div>
             </div>
-          ) : 'Apply'}
+          ) : t('applications.apply')}
         </button>
       </div>
     </div>

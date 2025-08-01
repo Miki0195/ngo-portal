@@ -5,6 +5,7 @@ import authService from '../../services/authService';
 import EventsFilter from './EventsFilter';
 import { useFilterContext } from '../../context/FilterContext';
 import '../../styles/EventsList.css';
+import { useTranslation } from 'react-i18next';
 
 const EventsList = () => {
   const [events, setEvents] = useState([]);
@@ -13,6 +14,7 @@ const EventsList = () => {
   const [error, setError] = useState(null);
   const { filters } = useFilterContext();
   const user = authService.getCurrentUser();
+  const { t } = useTranslation();
 
   const fetchEvents = useCallback(async () => {
     if (!user || !user.ngoId) {
@@ -98,10 +100,10 @@ const EventsList = () => {
       <div className="event-content">
         <h3 className="event-title">{event.eventName}</h3>
         <p className="event-date">
-          <strong>Start:</strong> {formatDate(event.startDate)}
+          <strong>{t('events.startDate')}</strong> {formatDate(event.startDate)}
         </p>
         <p className="event-date">
-          <strong>End:</strong> {formatDate(event.endDate)}
+          <strong>{t('events.endDate')}</strong> {formatDate(event.endDate)}
         </p>
         <p className="event-description">
           {event.eventDescription && event.eventDescription.length > 100
@@ -113,17 +115,17 @@ const EventsList = () => {
         {event.people_needed > 0 && (
           <div className="event-status">
             <span className="volunteers">
-              {event.people_applied || 0} / {event.people_needed || 0} volunteers
+              {event.people_applied || 0} / {event.people_needed || 0} {t('events.volunteers')}
             </span>
           </div>
         )}
         
         <div className="event-actions">
           <Link to={`/events/${event.id}`} className="view-btn">
-            View Details
+            {t('events.viewDetails')}
           </Link>
           <Link to={`/events/${event.id}/edit`} className="edit-btn">
-            Edit
+            {t('common.edit')}
           </Link>
         </div>
       </div>
@@ -131,11 +133,11 @@ const EventsList = () => {
   );
 
   if (loading && events.length === 0) {
-    return <div className="events-loading">Loading events...</div>;
+    return <div className="events-loading">{t('common.loading')}</div>;
   }
 
   if (error && events.length === 0) {
-    return <div className="events-error">Error: {error}</div>;
+    return <div className="events-error">{t('common.error')}: {error}</div>;
   }
 
   const hasActiveFilters = filters.searchTerm || filters.startDate;
@@ -144,15 +146,15 @@ const EventsList = () => {
     <div className="events-container">
       <div className="events-header">
         <h1>
-          Your Events
+          {t('events.title')}
           {hasActiveFilters && (
             <span className="filtered-results-count">
-              {filteredEvents.length} results
+              {filteredEvents.length} {t('events.filterResults')}
             </span>
           )}
         </h1>
         <Link to="/events/create" className="create-event-btn">
-          Create New Event
+          {t('events.createEvent')}
         </Link>
       </div>
 
@@ -162,13 +164,13 @@ const EventsList = () => {
         <div className="no-events">
           {events.length === 0 ? (
             <>
-              <p>You haven't created any events yet.</p>
+              <p>{t('events.noEventsYet')}</p>
               <Link to="/events/create" className="create-first-event-btn">
-                Create Your First Event
+                {t('events.createFirstEvent')}
               </Link>
             </>
           ) : (
-            <p>No events match your current filters.</p>
+            <p>{t('events.noEvenetsFilter')}</p>
           )}
         </div>
       ) : (

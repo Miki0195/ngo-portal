@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import profileService from '../../services/profileService';
 import { 
   BsFacebook, 
@@ -12,6 +13,7 @@ import {
 import '../../styles/Profile.css';
 
 const SocialMediaLinks = () => {
+  const { t } = useTranslation();
   const [socialLinks, setSocialLinks] = useState([]);
   const [platformChoices, setPlatformChoices] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -55,7 +57,7 @@ const SocialMediaLinks = () => {
           ]);
         }
       } catch (err) {
-        setError('Failed to load social media data. Please try again later.');
+        setError(t('profile.failedToLoadSocialMedia'));
         console.error(err);
       } finally {
         setLoading(false);
@@ -63,7 +65,7 @@ const SocialMediaLinks = () => {
     };
 
     fetchData();
-  }, []);
+  }, [t]);
 
   // Handle form input changes
   const handleInputChange = (e) => {
@@ -90,7 +92,7 @@ const SocialMediaLinks = () => {
         setError(response.error);
       }
     } catch (err) {
-      setError('Failed to add social media link. Please try again later.');
+      setError(t('profile.failedToAddSocialMedia'));
       console.error(err);
     } finally {
       setLoading(false);
@@ -118,7 +120,7 @@ const SocialMediaLinks = () => {
         setError(response.error);
       }
     } catch (err) {
-      setError('Failed to update social media link. Please try again later.');
+      setError(t('profile.failedToUpdateSocialMedia'));
       console.error(err);
     } finally {
       setLoading(false);
@@ -127,7 +129,7 @@ const SocialMediaLinks = () => {
 
   // Handle deleting a social media link
   const handleDelete = async (index) => {
-    if (!window.confirm('Are you sure you want to delete this social media link?')) {
+    if (!window.confirm(t('profile.deleteSocialLinkConfirm'))) {
       return;
     }
     
@@ -144,7 +146,7 @@ const SocialMediaLinks = () => {
         setError(response.error);
       }
     } catch (err) {
-      setError('Failed to delete social media link. Please try again later.');
+      setError(t('profile.failedToDeleteSocialMedia'));
       console.error(err);
     } finally {
       setLoading(false);
@@ -200,19 +202,19 @@ const SocialMediaLinks = () => {
   };
 
   if (loading && socialLinks.length === 0) {
-    return <div className="profile-loading">Loading social media links...</div>;
+    return <div className="profile-loading">{t('profile.loadingSocialLinks')}</div>;
   }
 
   return (
     <div className="profile-card">
       <div className="profile-card-header">
-        <h2>Social Media</h2>
+        <h2>{t('profile.socialMedia')}</h2>
         {!isAddMode && editIndex === null && (
           <button 
             className="profile-edit-button" 
             onClick={() => setIsAddMode(true)}
           >
-            Add Link
+            {t('profile.addLink')}
           </button>
         )}
       </div>
@@ -220,7 +222,7 @@ const SocialMediaLinks = () => {
       <div className="profile-card-content">
         {error && (
           <div className="profile-error">
-            <p>Error: {error}</p>
+            <p>{t('common.error')}: {error}</p>
           </div>
         )}
         
@@ -233,7 +235,7 @@ const SocialMediaLinks = () => {
                   <form onSubmit={handleUpdateSubmit} className="profile-link-edit-form">
                     <div className="profile-form-field">
                       <label className="profile-form-label" htmlFor="platform">
-                        Platform
+                        {t('profile.platform')}
                       </label>
                       <select
                         id="platform"
@@ -243,7 +245,7 @@ const SocialMediaLinks = () => {
                         onChange={handleInputChange}
                         required
                       >
-                        <option value="">Select Platform</option>
+                        <option value="">{t('profile.selectPlatform')}</option>
                         {platformChoices.map((choice) => (
                           <option key={choice.value} value={choice.value}>
                             {choice.display_name}
@@ -254,7 +256,7 @@ const SocialMediaLinks = () => {
                     
                     <div className="profile-form-field">
                       <label className="profile-form-label" htmlFor="url">
-                        URL
+                        {t('profile.url')}
                       </label>
                       <input
                         id="url"
@@ -269,14 +271,14 @@ const SocialMediaLinks = () => {
                     
                     <div className="profile-buttons">
                       <button type="submit" className="profile-edit-button" disabled={loading}>
-                        {loading ? 'Saving...' : 'Save Changes'}
+                        {loading ? t('profile.saving') : t('profile.saveChanges')}
                       </button>
                       <button 
                         type="button" 
                         className="profile-cancel-button"
                         onClick={cancelAction}
                       >
-                        Cancel
+                        {t('common.cancel')}
                       </button>
                     </div>
                   </form>
@@ -299,13 +301,13 @@ const SocialMediaLinks = () => {
                         className="profile-action-button" 
                         onClick={() => startEditing(index)}
                       >
-                        Edit
+                        {t('common.edit')}
                       </button>
                       <button 
                         className="profile-action-button profile-delete-button" 
                         onClick={() => handleDelete(index)}
                       >
-                        Delete
+                        {t('common.delete')}
                       </button>
                     </div>
                   </>
@@ -315,7 +317,7 @@ const SocialMediaLinks = () => {
           </div>
         ) : (
           <p className="profile-empty-message">
-            No social media links added yet.
+            {t('profile.noSocialLinksAdded')}
           </p>
         )}
         
@@ -324,7 +326,7 @@ const SocialMediaLinks = () => {
           <form onSubmit={handleAddSubmit} className="profile-form">
             <div className="profile-form-field">
               <label className="profile-form-label" htmlFor="new-platform">
-                Platform
+                {t('profile.platform')}
               </label>
               <select
                 id="new-platform"
@@ -334,7 +336,7 @@ const SocialMediaLinks = () => {
                 onChange={handleInputChange}
                 required
               >
-                <option value="">Select Platform</option>
+                <option value="">{t('profile.selectPlatform')}</option>
                 {platformChoices.map((choice) => (
                   <option key={choice.value} value={choice.value}>
                     {choice.display_name}
@@ -345,7 +347,7 @@ const SocialMediaLinks = () => {
             
             <div className="profile-form-field">
               <label className="profile-form-label" htmlFor="new-url">
-                URL
+                {t('profile.url')}
               </label>
               <input
                 id="new-url"
@@ -354,21 +356,21 @@ const SocialMediaLinks = () => {
                 className="profile-form-input"
                 value={formData.url}
                 onChange={handleInputChange}
-                placeholder="https://..."
+                placeholder={t('profile.urlPlaceholder')}
                 required
               />
             </div>
             
             <div className="profile-buttons">
               <button type="submit" className="profile-edit-button" disabled={loading}>
-                {loading ? 'Adding...' : 'Add Link'}
+                {loading ? t('profile.addingLink') : t('profile.addLink')}
               </button>
               <button 
                 type="button" 
                 className="profile-cancel-button"
                 onClick={cancelAction}
               >
-                Cancel
+                {t('common.cancel')}
               </button>
             </div>
           </form>

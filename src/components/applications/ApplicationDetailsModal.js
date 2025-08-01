@@ -1,6 +1,7 @@
 import React from 'react';
 import { FaCheckCircle, FaTimesCircle, FaHourglassHalf, FaTimes } from 'react-icons/fa';
 import '../../styles/Applications.css';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Modal component for displaying detailed application information
@@ -17,6 +18,8 @@ const ApplicationDetailsModal = ({
   onClose, 
   onUpdateStatus 
 }) => {
+  const { t } = useTranslation();
+
   if (!show || !application) {
     return null;
   }
@@ -32,54 +35,54 @@ const ApplicationDetailsModal = ({
     <div className="modal-overlay">
       <div className="modal-container">
         <div className="modal-header">
-          <h2 className="modal-title">Application Details</h2>
+          <h2 className="modal-title">{t('applications.applicationDetails')}</h2>
           <button className="modal-close" onClick={onClose}>
             <FaTimes />
           </button>
         </div>
         <div className="modal-body">
           <div className="modal-section">
-            <h3 className="modal-section-title">Applicant Information</h3>
+            <h3 className="modal-section-title">{t('applications.applicationInformation')}</h3>
             <div className="detail-card">
               <div className="detail-row">
-                <span className="detail-label">Name:</span>
+                <span className="detail-label">{t('applications.name')}:</span>
                 {application.user.full_name}
               </div>
               <div className="detail-row">
-                <span className="detail-label">Email:</span>
+                <span className="detail-label">{t('applications.email')}:</span>
                 {application.user.email}
               </div>
               {application.user.bio && (
                 <div className="detail-row">
-                  <span className="detail-label">Bio:</span>
+                  <span className="detail-label">{t('applications.bio')}:</span>
                   {application.user.bio}
                 </div>
               )}
               <div className="detail-row">
-                <span className="detail-label">Experience Points:</span>
+                <span className="detail-label">{t('applications.experiencePoints')}:</span>
                 {application.user.total_xp}
               </div>
               {application.user.birthday && (
                 <div className="detail-row">
-                  <span className="detail-label">Birthday:</span>
+                  <span className="detail-label">{t('applications.birthday')}:</span>
                   {new Date(application.user.birthday).toLocaleDateString()}
                 </div>
               )}
             </div>
           </div>
           <div className="modal-section">
-            <h3 className="modal-section-title">Application Details</h3>
+            <h3 className="modal-section-title">{t('applications.applicationDetails')}</h3>
             <div className="detail-card">
               <div className="detail-row">
-                <span className="detail-label">Event:</span>
+                <span className="detail-label">{t('applications.event')}:</span>
                 {application.event_name}
               </div>
               <div className="detail-row">
-                <span className="detail-label">Application Date:</span>
+                <span className="detail-label">{t('applications.applicationDate')}:</span>
                 {new Date(application.application_date).toLocaleDateString()}
               </div>
               <div className="detail-row">
-                <span className="detail-label">Status:</span>
+                <span className="detail-label">{t('applications.status')}:</span>
                 {renderStatusBadge(application.status, application.status_display)}
               </div>
             </div>
@@ -93,7 +96,7 @@ const ApplicationDetailsModal = ({
                 onClick={() => onUpdateStatus(application.id, 'accepted')}
               >
                 <FaCheckCircle />
-                Accept
+                {t('applications.accept')}
               </button>
             )}
             
@@ -103,7 +106,7 @@ const ApplicationDetailsModal = ({
                 onClick={() => onUpdateStatus(application.id, 'waitlisted')}
               >
                 <FaHourglassHalf />
-                Waitlist
+                {t('applications.waitlist')}
               </button>
             )}
             
@@ -113,12 +116,12 @@ const ApplicationDetailsModal = ({
                 onClick={() => onUpdateStatus(application.id, 'applied')}
               >
                 <FaTimesCircle />
-                Revert
+                {t('applications.revert')}
               </button>
             )}
           </div>
           <button className="btn btn-secondary" onClick={onClose}>
-            Close
+            {t('common.close')}
           </button>
         </div>
       </div>

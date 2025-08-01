@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaCheckCircle, FaTimesCircle, FaHourglassHalf, FaUserCircle, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import '../../styles/Applications.css';
+import { useTranslation } from 'react-i18next';
 
 const ApplicationsList = ({
   applications,
@@ -15,6 +16,7 @@ const ApplicationsList = ({
   const [currentPage, setCurrentPage] = useState(1);
   const [paginatedApplications, setPaginatedApplications] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const total = Math.ceil(applications.length / ITEMS_PER_PAGE);
@@ -96,7 +98,7 @@ const ApplicationsList = ({
             checked={areAllCurrentPageItemsSelected() && paginatedApplications.length > 0}
             onChange={toggleSelectAllCurrentPage}
           />
-          <span className="select-all-label">Applications</span>
+          <span className="select-all-label">{t('applications.applications')}</span>
         </div>
         <div className="results-count">
           {loading && (
@@ -106,13 +108,13 @@ const ApplicationsList = ({
               <div className="loading-dot"></div>
             </div>
           )}
-          {applications.length} results
+          {applications.length} {t('applications.results')}
         </div>
       </div>
       
       {applications.length === 0 ? (
         <div className="no-results">
-          <p>No applications found.</p>
+          <p>{t('applications.noApplicationsFound')}</p>
         </div>
       ) : (
         <div className="table-responsive">
@@ -120,11 +122,11 @@ const ApplicationsList = ({
             <thead>
               <tr>
                 <th width="50"></th>
-                <th>Applicant</th>
-                <th>Event</th>
-                <th>Application Date</th>
-                <th>Status</th>
-                <th>Actions</th>
+                <th>{t('applications.applicant')}</th>
+                <th>{t('applications.event')}</th>
+                <th>{t('applications.applicationDate')}</th>
+                <th>{t('applications.status')}</th>
+                <th>{t('applications.actions')}</th>
               </tr>
             </thead>
             <tbody>
@@ -155,7 +157,7 @@ const ApplicationsList = ({
                         className="action-btn action-btn-view"
                         onClick={() => onViewDetails(application)}
                       >
-                        View
+                        {t('applications.view')}
                       </button>
                       
                       {application.status !== 'accepted' && (
@@ -164,7 +166,7 @@ const ApplicationsList = ({
                           onClick={() => onUpdateStatus(application.id, 'accepted')}
                         >
                           <FaCheckCircle />
-                          Accept
+                          {t('applications.accept')}
                         </button>
                       )}
                       
@@ -174,7 +176,7 @@ const ApplicationsList = ({
                           onClick={() => onUpdateStatus(application.id, 'waitlisted')}
                         >
                           <FaHourglassHalf />
-                          Waitlist
+                          {t('applications.waitlist')}
                         </button>
                       )}
                       
@@ -184,7 +186,7 @@ const ApplicationsList = ({
                           onClick={() => onUpdateStatus(application.id, 'applied')}
                         >
                           <FaTimesCircle />
-                          Revert
+                          {t('applications.revert')}
                         </button>
                       )}
                     </div>

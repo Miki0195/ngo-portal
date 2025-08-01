@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FaUserCircle, FaTimes, FaUsers } from 'react-icons/fa';
 import applicationService from '../../services/applicationService';
 import '../../styles/EventVolunteers.css';
@@ -7,6 +8,7 @@ import '../../styles/EventVolunteers.css';
  * Modal component to display volunteers for an event
  */
 const EventVolunteersModal = ({ show, eventId, eventName, onClose }) => {
+  const { t } = useTranslation();
   const [volunteers, setVolunteers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -32,7 +34,7 @@ const EventVolunteersModal = ({ show, eventId, eventName, onClose }) => {
       }
     } catch (err) {
       console.error('Error loading volunteers:', err);
-      setError('Failed to load volunteers. Please try again.');
+      setError(t('events.failedToLoadVolunteers'));
     } finally {
       setLoading(false);
     }
@@ -72,7 +74,7 @@ const EventVolunteersModal = ({ show, eventId, eventName, onClose }) => {
         <div className="modal-header">
           <h2 className="modal-title">
             <FaUsers /> 
-            Volunteers for {eventName}
+            {t('events.volunteersFor')} {eventName}
           </h2>
           <button className="modal-close" onClick={onClose}>
             <FaTimes />
@@ -82,22 +84,22 @@ const EventVolunteersModal = ({ show, eventId, eventName, onClose }) => {
         <div className="modal-body">
           <div className="volunteers-controls">
             <div className="volunteers-filters">
-              <label htmlFor="status-filter">Status:</label>
+              <label htmlFor="status-filter">{t('events.status')}:</label>
               <select 
                 id="status-filter" 
                 value={statusFilter} 
                 onChange={handleStatusFilterChange}
               >
-                <option value="">All Statuses</option>
-                <option value="applied">Applied</option>
-                <option value="accepted">Accepted</option>
-                <option value="waitlisted">Waitlisted</option>
-                <option value="completed">Completed</option>
+                <option value="">{t('events.allStatuses')}</option>
+                <option value="applied">{t('events.applied')}</option>
+                <option value="accepted">{t('events.accepted')}</option>
+                <option value="waitlisted">{t('events.waitlisted')}</option>
+                <option value="completed">{t('events.completed')}</option>
               </select>
             </div>
             
             <div className="volunteers-count">
-              {volunteers.length} volunteer{volunteers.length !== 1 ? 's' : ''}
+              {volunteers.length} {volunteers.length === 1 ? t('events.volunteer') : t('events.volunteersPlural')}
             </div>
           </div>
           
@@ -111,7 +113,7 @@ const EventVolunteersModal = ({ show, eventId, eventName, onClose }) => {
             <div className="error-message">{error}</div>
           ) : volunteers.length === 0 ? (
             <div className="volunteers-empty">
-              No volunteers found for this event{statusFilter ? ` with status "${statusFilter}"` : ''}.
+              {t('events.noVolunteersFound')}{statusFilter ? ` ${t('events.noVolunteersFoundWithStatus')} "${statusFilter}"` : ''}.
             </div>
           ) : (
             <div className="volunteers-list">
@@ -126,8 +128,8 @@ const EventVolunteersModal = ({ show, eventId, eventName, onClose }) => {
                   </div>
                   
                   <div className="volunteer-info">
-                    <h3 className="volunteer-name">{volunteer.user?.full_name || 'Unknown User'}</h3>
-                    <p className="volunteer-email">{volunteer.user?.email || 'No email'}</p>
+                    <h3 className="volunteer-name">{volunteer.user?.full_name || t('events.unknownUser')}</h3>
+                    <p className="volunteer-email">{volunteer.user?.email || t('events.noEmail')}</p>
                     
                     {/* {volunteer.user?.bio && (
                       <div className="volunteer-actions">

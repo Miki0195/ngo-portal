@@ -1,0 +1,36 @@
+{
+  "common": {
+    "loading": "Laden...",
+    "error": "Fehler",
+    "success": "Erfolgreich",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "add": "Hinzufügen"
+  },
+  "auth": {
+    "login": "Anmelden",
+    "logout": "Abmelden",
+    "register": "Registrieren",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "loginTitle": "NGO Portal Anmeldung",
+    "loginButton": "Anmelden",
+    "registerButton": "NGO Registrieren"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "events": "Veranstaltungen",
+    "profile": "Profil",
+    "settings": "Einstellungen",
+    "logout": "Abmelden"
+  },
+  "profile": {
+    "title": "NGO Profil",
+    "basicInfo": "Grundinformationen",
+    "socialMedia": "Soziale Medien",
+    "contactInfo": "Kontaktinformationen",
+    "gallery": "Galerie"
+  }
+} 

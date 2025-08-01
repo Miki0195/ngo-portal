@@ -1,0 +1,139 @@
+{
+  "common": {
+    "loading": "Betöltés...",
+    "error": "Hiba",
+    "success": "Sikeres",
+    "save": "Mentés",
+    "cancel": "Mégse",
+    "edit": "Szerkesztés",
+    "delete": "Törlés",
+    "add": "Hozzáadás",
+    "back": "Vissza",
+    "next": "Következő",
+    "previous": "Előző",
+    "search": "Keresés",
+    "filter": "Szűrő",
+    "clear": "Törlés",
+    "confirm": "Megerősítés",
+    "close": "Bezárás"
+  },
+  
+  "auth": {
+    "login": "Bejelentkezés",
+    "logout": "Kijelentkezés",
+    "register": "Regisztráció",
+    "email": "E-mail",
+    "password": "Jelszó",
+    "confirmPassword": "Jelszó megerősítése",
+    "forgotPassword": "Elfelejtett jelszó?",
+    "loginTitle": "NGO Portál Bejelentkezés",
+    "loginSubtitle": "Lépjen be szervezete irányítópultjába",
+    "registerTitle": "NGO Regisztráció",
+    "loginButton": "Bejelentkezés",
+    "registerButton": "NGO Regisztráció",
+    "invalidCredentials": "Érvénytelen e-mail vagy jelszó",
+    "loginSuccess": "Üdvözöljük!",
+    "registerSuccess": "Sikeres regisztráció!"
+  },
+  
+  "navigation": {
+    "dashboard": "Irányítópult",
+    "events": "Események",
+    "profile": "Profil",
+    "settings": "Beállítások",
+    "help": "Súgó",
+    "logout": "Kijelentkezés"
+  },
+  
+  "profile": {
+    "title": "NGO Profil",
+    "basicInfo": "Alapinformációk",
+    "socialMedia": "Közösségi média",
+    "contactInfo": "Kapcsolattartási adatok",
+    "gallery": "Galéria",
+    "organizationName": "Szervezet neve",
+    "description": "Leírás",
+    "website": "Weboldal",
+    "founded": "Alapítva",
+    "location": "Helyszín",
+    "addLink": "Link hozzáadása",
+    "addContact": "Kapcsolat hozzáadása",
+    "addPhoto": "Fotó hozzáadása",
+    "noPhotos": "Még nem adtak hozzá fotókat",
+    "noContacts": "Még nem adtak hozzá kapcsolattartási adatokat",
+    "noSocialLinks": "Még nem adtak hozzá közösségi média linkeket"
+  },
+  
+  "events": {
+    "title": "Események",
+    "createEvent": "Esemény létrehozása",
+    "editEvent": "Esemény szerkesztése",
+    "eventName": "Esemény neve",
+    "eventDescription": "Esemény leírása",
+    "startDate": "Kezdő dátum",
+    "endDate": "Befejező dátum",
+    "location": "Helyszín",
+    "eventType": "Esemény típusa",
+    "volunteersNeeded": "Szükséges önkéntesek száma",
+    "imageUrl": "Kép URL",
+    "teams": "Csapatok",
+    "competences": "Kompetenciák",
+    "additionalDetails": "További részletek",
+    "basicInformation": "Alapinformációk",
+    "locationDetails": "Helyszín részletei",
+    "createSuccess": "Esemény sikeresen létrehozva!",
+    "updateSuccess": "Esemény sikeresen frissítve!",
+    "deleteConfirm": "Biztosan törli ezt az eseményt?",
+    "noEvents": "Nem találhatók események"
+  },
+  
+  "contactTypes": {
+    "phone": "Telefon",
+    "email": "E-mail",
+    "address": "Cím",
+    "website": "Weboldal"
+  },
+  
+  "socialPlatforms": {
+    "facebook": "Facebook",
+    "instagram": "Instagram",
+    "linkedin": "LinkedIn",
+    "youtube": "YouTube",
+    "tiktok": "TikTok",
+    "twitter": "Twitter/X"
+  },
+  
+  "validation": {
+    "required": "Ez a mező kötelező",
+    "emailFormat": "Kérjük, adjon meg egy érvényes e-mail címet",
+    "phoneFormat": "Kérjük, adjon meg egy érvényes telefonszámot",
+    "urlFormat": "Kérjük, adjon meg egy érvényes URL-t",
+    "minLength": "Minimum {{count}} karakter szükséges",
+    "maxLength": "Maximum {{count}} karakter engedélyezett",
+    "passwordMatch": "A jelszavaknak egyezniük kell",
+    "phoneNumberShort": "A telefonszám túl rövid. Kérjük, adja meg az országkódot és a teljes számot.",
+    "selectCountryCode": "Kérjük, válasszon országkódot a legördülő menüből.",
+    "invalidPhoneNumber": "Kérjük, adjon meg egy érvényes telefonszámot a kiválasztott országhoz.",
+    "emailMissingAt": "Az e-mail címnek tartalmaznia kell egy @ szimbólumot.",
+    "emailMissingDomain": "Az e-mail címnek tartalmaznia kell egy domaint (pl. .com, .org).",
+    "invalidEmailFormat": "Kérjük, adjon meg érvényes e-mail cím formátumot."
+  },
+  
+  "messages": {
+    "uploadSuccess": "Fájl sikeresen feltöltve",
+    "uploadError": "Fájl feltöltése sikertelen",
+    "deleteSuccess": "Elem sikeresen törölve",
+    "deleteError": "Elem törlése sikertelen",
+    "saveSuccess": "Változtatások sikeresen mentve",
+    "saveError": "Változtatások mentése sikertelen",
+    "networkError": "Hálózati hiba. Kérjük, ellenőrizze a kapcsolatot.",
+    "serverError": "Szerver hiba. Kérjük, próbálja újra később."
+  },
+  
+  "hints": {
+    "phoneInput": "Válasszon országot és adja meg a telefonszámot. A formátum automatikusan ellenőrzésre kerül.",
+    "emailInput": "Adjon meg egy érvényes e-mail címet (pl. kapcsolat@szervezet.org)",
+    "coordinatesHelp": "Szüksége van egy adott helyszín koordinátáira?",
+    "findCoordinates": "Szélesség és hosszúság keresése itt →"
+  }
+} 

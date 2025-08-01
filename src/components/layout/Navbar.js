@@ -1,9 +1,12 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import authService from '../../services/authService';
+import LanguagePicker from '../common/LanguagePicker';
 import '../../styles/Navbar.css';
 
 const Navbar = () => {
+  const { t } = useTranslation();
   const location = useLocation();
   const user = authService.getCurrentUser();
 
@@ -29,24 +32,25 @@ const Navbar = () => {
       <div className="navbar-menu">
         <ul className="navbar-nav">
           <li className={`nav-item ${isActive('/dashboard')}`}>
-            <Link to="/dashboard" className="nav-link">Dashboard</Link>
+            <Link to="/dashboard" className="nav-link">{t('navigation.dashboard')}</Link>
           </li>
           <li className={`nav-item ${isActive('/events')}`}>
-            <Link to="/events" className="nav-link">Events</Link>
+            <Link to="/events" className="nav-link">{t('navigation.events')}</Link>
           </li>
           <li className={`nav-item ${isActive('/applications')}`}>
-            <Link to="/applications" className="nav-link">Applications</Link>
+            <Link to="/applications" className="nav-link">{t('navigation.applications')}</Link>
           </li>
           <li className={`nav-item ${isActive('/profile')}`}>
-            <Link to="/profile" className="nav-link">Profile</Link>
+            <Link to="/profile" className="nav-link">{t('navigation.profile')}</Link>
           </li>
         </ul>
       </div>
       
       <div className="navbar-user">
+        <LanguagePicker />
         <span className="user-name">{user.ngoName}</span>
         <button className="logout-btn" onClick={handleLogout}>
-          Logout
+          {t('navigation.logout')}
         </button>
       </div>
     </nav>

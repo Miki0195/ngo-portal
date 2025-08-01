@@ -10,6 +10,7 @@ import {
   ApplicationDetailsModal 
 } from '../components/applications';
 import '../styles/Applications.css';
+import { useTranslation } from 'react-i18next';
 
 const Applications = () => {
   const [applications, setApplications] = useState([]);
@@ -21,6 +22,7 @@ const Applications = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalApplication, setModalApplication] = useState(null);
   const [bulkAction, setBulkAction] = useState('');
+  const { t } = useTranslation();
   
   // Filter states
   const [filters, setFilters] = useState({
@@ -271,7 +273,7 @@ const Applications = () => {
   return (
     <div className="applications-container">
       <div className="applications-header">
-        <h1>Manage Event Applications</h1>
+        <h1>{t('applications.manageEventApplications')}</h1>
       </div>
       
       {error && (

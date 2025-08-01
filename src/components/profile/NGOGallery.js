@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FaPlus, FaTimes, FaTrash, FaCamera } from 'react-icons/fa';
 import profileService from '../../services/profileService';
 import '../../styles/NGOGallery.css';
 
 const NGOGallery = () => {
+  const { t } = useTranslation();
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -32,7 +34,7 @@ const NGOGallery = () => {
         setError(response.error);
       }
     } catch (err) {
-      setError('Failed to load gallery photos. Please try again later.');
+      setError(t('profile.failedToLoadGallery'));
       console.error(err);
     } finally {
       setLoading(false);
@@ -71,7 +73,7 @@ const NGOGallery = () => {
     e.preventDefault();
     
     if (selectedFiles.length === 0) {
-      setUploadError('Please select at least one file to upload.');
+      setUploadError(t('profile.selectAtLeastOneFile'));
       return;
     }
     
@@ -96,7 +98,7 @@ const NGOGallery = () => {
         setUploadError(response.error);
       }
     } catch (err) {
-      setUploadError('Failed to upload photos. Please try again.');
+      setUploadError(t('profile.failedToUploadPhotos'));
       console.error(err);
     } finally {
       setIsUploading(false);
@@ -104,7 +106,7 @@ const NGOGallery = () => {
   };
 
   const handleDeletePhoto = async (photoId) => {
-    if (window.confirm('Are you sure you want to delete this photo? This action cannot be undone.')) {
+    if (window.confirm(t('profile.deletePhotoConfirm'))) {
       try {
         const response = await profileService.deleteGalleryPhoto(photoId);
         
@@ -121,7 +123,7 @@ const NGOGallery = () => {
           setError(response.error);
         }
       } catch (err) {
-        setError('Failed to delete photo. Please try again.');
+        setError(t('profile.failedToDeletePhoto'));
         console.error(err);
       }
     }
@@ -140,8 +142,8 @@ const NGOGallery = () => {
   if (loading && photos.length === 0) {
     return (
       <div className="gallery-container">
-        <h2>Gallery</h2>
-        <div className="gallery-loading">Loading gallery...</div>
+        <h2>{t('profile.gallery')}</h2>
+        <div className="gallery-loading">{t('profile.loadingGallery')}</div>
       </div>
     );
   }
@@ -149,18 +151,18 @@ const NGOGallery = () => {
   return (
     <div className="gallery-container">
       <div className="gallery-header">
-        <h2>NGO Gallery</h2>
+        <h2>{t('profile.ngoGallery')}</h2>
         <button 
           className="gallery-upload-button" 
           onClick={() => setShowUploadForm(!showUploadForm)}
         >
           {showUploadForm ? (
             <>
-              <FaTimes /> Cancel
+              <FaTimes /> {t('common.cancel')}
             </>
           ) : (
             <>
-              <FaPlus /> Add Photos
+              <FaPlus /> {t('profile.addPhotos')}
             </>
           )}
         </button>
@@ -168,13 +170,13 @@ const NGOGallery = () => {
 
       {error && (
         <div className="gallery-error">
-          <p>Error: {error}</p>
+          <p>{t('common.error')}: {error}</p>
         </div>
       )}
 
       {showUploadForm && (
         <div className="gallery-upload-form">
-          <h3>Upload New Photos</h3>
+          <h3>{t('profile.uploadNewPhotos')}</h3>
           
           {uploadError && (
             <div className="gallery-upload-error">
@@ -199,7 +201,7 @@ const NGOGallery = () => {
             
             {selectedFiles.length > 0 ? (
               <div className="gallery-selected-files">
-                <p>{selectedFiles.length} file(s) selected</p>
+                <p>{selectedFiles.length} {t('profile.filesSelected')}</p>
                 <ul>
                   {selectedFiles.map((file, index) => (
                     <li key={index}>{file.name}</li>
@@ -209,19 +211,19 @@ const NGOGallery = () => {
             ) : (
               <div className="gallery-dropzone-content">
                 <FaCamera size={40} />
-                <p>Drag & drop photos here or click to browse</p>
+                <p>{t('profile.dragDropPhotos')}</p>
               </div>
             )}
           </div>
           
           <div className="gallery-form-field">
-            <label htmlFor="photo-caption">Caption (optional)</label>
+            <label htmlFor="photo-caption">{t('profile.captionOptional')}</label>
             <input
               id="photo-caption"
               type="text"
               value={photoCaption}
               onChange={(e) => setPhotoCaption(e.target.value)}
-              placeholder="Enter a caption for your photos"
+              placeholder={t('profile.captionPlaceholder')}
             />
           </div>
           
@@ -232,7 +234,7 @@ const NGOGallery = () => {
               onClick={handleUpload}
               disabled={isUploading || selectedFiles.length === 0}
             >
-              {isUploading ? 'Uploading...' : 'Upload Photos'}
+              {isUploading ? t('profile.uploading') : t('profile.uploadPhotos')}
             </button>
             <button 
               type="button" 
@@ -244,7 +246,7 @@ const NGOGallery = () => {
                 setUploadError(null);
               }}
             >
-              Cancel
+              {t('common.cancel')}
             </button>
           </div>
         </div>
@@ -252,7 +254,7 @@ const NGOGallery = () => {
 
       {photos.length === 0 ? (
         <div className="gallery-empty">
-          <p>No photos in the gallery yet. Add some to showcase your organization!</p>
+          <p>{t('profile.noPhotosInGallery')}</p>
         </div>
       ) : (
         <div className="gallery-grid">
@@ -261,14 +263,14 @@ const NGOGallery = () => {
               <div className="gallery-image-container">
                 <img 
                   src={photo.thumbnail_image} 
-                  alt={photo.caption || 'Gallery photo'} 
+                  alt={photo.caption || t('profile.galleryPhoto')} 
                   onClick={() => openPhotoModal(photo)}
                 />
                 <div className="gallery-item-actions">
                   <button 
                     className="gallery-delete-button"
                     onClick={() => handleDeletePhoto(photo.id)}
-                    title="Delete photo"
+                    title={t('profile.deletePhotoTitle')}
                   >
                     <FaTrash />
                   </button>
@@ -290,7 +292,7 @@ const NGOGallery = () => {
             </button>
             <img 
               src={selectedPhoto.large_image} 
-              alt={selectedPhoto.caption || 'Gallery photo'} 
+              alt={selectedPhoto.caption || t('profile.galleryPhoto')} 
             />
             {selectedPhoto.caption && (
               <div className="gallery-modal-caption">{selectedPhoto.caption}</div>
@@ -299,7 +301,7 @@ const NGOGallery = () => {
               className="gallery-modal-delete"
               onClick={() => handleDeletePhoto(selectedPhoto.id)}
             >
-              <FaTrash /> Delete Photo
+              <FaTrash /> {t('profile.deletePhoto')}
             </button>
           </div>
         </div>

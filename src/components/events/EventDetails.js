@@ -6,6 +6,7 @@ import EventVolunteersModal from './EventVolunteersModal';
 import { FaUsers } from 'react-icons/fa';
 import '../../styles/EventDetails.css';
 import '../../styles/EventVolunteers.css';
+import { useTranslation } from 'react-i18next';
 
 const EventDetails = () => {
   const { id } = useParams();
@@ -16,6 +17,7 @@ const EventDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showVolunteersModal, setShowVolunteersModal] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchEventDetails = async () => {
@@ -94,14 +96,14 @@ const EventDetails = () => {
   const hasActiveFilters = filters.searchTerm || filters.startDate;
 
   if (loading) {
-    return <div className="event-details-loading">Loading event details...</div>;
+    return <div className="event-details-loading">{t('common.loading')}</div>;
   }
 
   if (error) {
     return (
       <div className="event-details-error">
-        <p>Error: {error}</p>
-        <Link to="/events" className="back-button">Back to Events</Link>
+        <p>{t('common.error')}: {error}</p>
+        <Link to="/events" className="back-button">{t('common.backEvent')}</Link>
       </div>
     );
   }
@@ -109,8 +111,8 @@ const EventDetails = () => {
   if (!event) {
     return (
       <div className="event-details-not-found">
-        <p>Event not found.</p>
-        <Link to="/events" className="back-button">Back to Events</Link>
+        <p>{t('events.noEvent')}</p>
+        <Link to="/events" className="back-button">{t('common.backEvent')}</Link>
       </div>
     );
   }
@@ -122,16 +124,19 @@ const EventDetails = () => {
         <div className="event-details-actions">
           <Link to="/events" className="back-button">
             {hasActiveFilters ? (
-              <>Back to Filtered Events <span className="filter-indicator">•</span></>
+              <>
+                {t('events.backToFilteredEvents')} <span className="filter-indicator">•</span>
+              </>
             ) : (
-              "Back to Events"
+              t('common.backEvent') 
             )}
           </Link>
+
           <Link to={`/events/${id}/edit`} className="edit-button">
-            Edit Event
+            {t('common.edit')}
           </Link>
           <button onClick={handleDelete} className="delete-button">
-            Delete Event
+            {t('common.delete')}
           </button>
         </div>
       </div>
@@ -142,33 +147,33 @@ const EventDetails = () => {
             {event.main_image_url ? (
               <img src={event.main_image_url} alt={safeRenderText(event.eventName)} />
             ) : (
-              <div className="placeholder-image">No Image Available</div>
+              <div className="placeholder-image">{t('common.noImage')}</div>
             )}
           </div>
 
           <div className="event-details-info">
             <div className="event-info-item">
-              <h3>Date & Time</h3>
-              <p><strong>Start:</strong> {formatDate(event.startDate)}</p>
-              <p><strong>End:</strong> {formatDate(event.endDate)}</p>
+              <h3>{t('events.dateAndTime')}</h3>
+              <p><strong>{t('events.startDate')}</strong> {formatDate(event.startDate)}</p>
+              <p><strong>{t('events.endDate')}</strong> {formatDate(event.endDate)}</p>
             </div>
 
             {/* Only show volunteers section if people_needed > 0 */}
             {event.people_needed > 0 && (
               <div className="event-info-item">
-                <h3>Volunteers</h3>
+                <h3>{t('events.volunteers')}</h3>
                 <p>
                   <span className="volunteer-status">
                     {event.people_applied || 0} / {event.people_needed || 0}
                   </span> 
-                  volunteers accepted
+                  {t('events.volunteersAccepted')}
                 </p>
                 <button 
                   className="volunteers-button"
                   onClick={toggleVolunteersModal}
                 >
                   <FaUsers />
-                  View Volunteers
+                  {t('events.viewVolunteers')}
                   {/* <span className="volunteers-badge">{event.people_applied || 0}</span> */}
                 </button>
               </div>
@@ -176,19 +181,19 @@ const EventDetails = () => {
 
             {event.location && (
               <div className="event-info-item">
-                <h3>Location</h3>
-                <p>{event.location.text ? safeRenderText(event.location.text) : "Address not specified"}</p>
+                <h3>{t('events.location')}</h3>
+                <p>{event.location.text ? safeRenderText(event.location.text) : t('events.addressNotSpecified')}</p>
               </div>
             )}
 
             <div className="event-info-item">
-              <h3>Description</h3>
+              <h3>{t('events.description')}</h3>
               <p className="event-description">{safeRenderText(event.eventDescription)}</p>
             </div>
 
             {event.focus_teams && event.focus_teams.length > 0 && (
               <div className="event-info-item">
-                <h3>Focus Teams</h3>
+                <h3>{t('events.focusTeams')}</h3>
                 <div className="event-tags">
                   {event.focus_teams.map((team, index) => (
                     <span key={index} className="event-tag">{safeRenderText(team)}</span>
@@ -199,7 +204,7 @@ const EventDetails = () => {
 
             {event.competences && event.competences.length > 0 && (
               <div className="event-info-item">
-                <h3>Competences</h3>
+                <h3>{t('events.competences')}</h3>
                 <div className="event-tags">
                   {event.competences.map((competence, index) => (
                     <span key={index} className="event-tag">{safeRenderText(competence)}</span>
@@ -219,7 +224,7 @@ const EventDetails = () => {
 
         {gallery.length > 0 && (
           <div className="event-gallery">
-            <h2>Event Gallery</h2>
+            <h2>{t('events.eventGallery')}</h2>
             <div className="gallery-grid">
               {gallery.map((photo, index) => (
                 <div key={index} className="gallery-item">

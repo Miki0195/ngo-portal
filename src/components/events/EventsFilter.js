@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useFilterContext } from '../../context/FilterContext';
 import '../../styles/EventsFilter.css';
+import { useTranslation } from 'react-i18next';
 
 const EventsFilter = ({ onFilterChange }) => {
   const { filters, updateFilters } = useFilterContext();
@@ -10,6 +11,7 @@ const EventsFilter = ({ onFilterChange }) => {
   const [contentHeight, setContentHeight] = useState('0px');
   const contentRef = useRef(null);
   const initialRenderDone = useRef(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!initialRenderDone.current) {
@@ -72,7 +74,7 @@ const EventsFilter = ({ onFilterChange }) => {
     <div className="events-filter">
       <div className="filter-header" onClick={toggleExpand}>
         <h3>
-          Filter Events
+          {t('events.filterEvents')}
           {(searchTerm || startDate) && (
             <span className="active-filters-badge">Active</span>
           )}
@@ -88,11 +90,11 @@ const EventsFilter = ({ onFilterChange }) => {
         <div className="filter-inner">
           <div className="filter-row">
             <div className="filter-field">
-              <label htmlFor="event-search">Event Name</label>
+              <label htmlFor="event-search">{t('events.eventNameFilter')}</label>
               <input
                 id="event-search"
                 type="text"
-                placeholder="Type first letters..."
+                placeholder={t('events.typeFirstLetters')}
                 value={searchTerm}
                 onChange={handleSearchChange}
               />
@@ -100,20 +102,20 @@ const EventsFilter = ({ onFilterChange }) => {
             </div>
             
             <div className="filter-field">
-              <label htmlFor="event-date">Start Date</label>
+              <label htmlFor="event-date">{t('events.startDateFilter')}</label>
               <input
                 id="event-date"
                 type="date"
                 value={startDate}
                 onChange={handleDateChange}
               />
-              <small className="filter-hint">Shows events starting on or after this date</small>
+              <small className="filter-hint">{t('events.startDateFilterDesc')}</small>
             </div>
           </div>
           
           <div className="filter-actions">
             <button className="reset-filters" onClick={resetFilters}>
-              Reset Filters
+              {t('events.resetFilters')}
             </button>
           </div>
         </div>

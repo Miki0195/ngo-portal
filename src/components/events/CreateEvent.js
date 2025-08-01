@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import eventService from '../../services/eventService';
 import authService from '../../services/authService';
 import '../../styles/CreateEvent.css';
@@ -8,6 +9,7 @@ import '../../styles/CreateEvent.css';
 const baseURL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
 const CreateEvent = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -320,22 +322,22 @@ const CreateEvent = () => {
   return (
     <div className="create-event-container">
       <div className="create-event-header">
-        <h1>Create New Event</h1>
+        <h1>{t('events.createEvent')}</h1>
       </div>
 
       {success ? (
         <div className="create-event-success">
-          <p>Event created successfully! Redirecting to event details...</p>
+          <p>{t('events.createEventSuccess')}</p>
         </div>
       ) : (
         <form className="create-event-form" onSubmit={handleSubmit}>
           {error && <div className="form-error">{error}</div>}
 
           <div className="form-section">
-            <h2>Basic Information</h2>
+            <h2>{t('events.basicInformation')}</h2>
             
             <div className="form-group">
-              <label htmlFor="eventName">Event Name*</label>
+              <label htmlFor="eventName" required>{t('events.eventName')}</label>
               <input
                 type="text"
                 id="eventName"
@@ -347,7 +349,7 @@ const CreateEvent = () => {
             </div>
             
             <div className="form-group">
-              <label htmlFor="eventDescription">Description*</label>
+              <label htmlFor="eventDescription">{t('events.eventDescription')}</label>
               <textarea
                 id="eventDescription"
                 name="eventDescription"
@@ -360,7 +362,7 @@ const CreateEvent = () => {
             
             <div className="form-row">
               <div className="form-group half">
-                <label htmlFor="startDate">Start Date & Time*</label>
+                <label htmlFor="startDate">{t('events.startDateTime')}</label>
                 <input
                   type="datetime-local"
                   id="startDate"
@@ -372,7 +374,7 @@ const CreateEvent = () => {
               </div>
               
               <div className="form-group half">
-                <label htmlFor="endDate">End Date & Time*</label>
+                <label htmlFor="endDate">{t('events.endDateTime')}</label>
                 <input
                   type="datetime-local"
                   id="endDate"
@@ -386,7 +388,7 @@ const CreateEvent = () => {
             
             <div className="form-row">
               <div className="form-group half">
-                <label htmlFor="markerType">Event Type*</label>
+                <label htmlFor="markerType">{t('events.eventType')}</label>
                 <select
                   id="markerType"
                   name="markerType"
@@ -403,10 +405,10 @@ const CreateEvent = () => {
           </div>
 
           <div className="form-section">
-            <h2>Teams & Competences</h2>
+            <h2>{t('events.teamsAndCompetences')}</h2>
             
             <div className="form-group">
-              <label>Teams*</label>
+              <label>{t('events.teams')}</label>
               <div className="checkbox-group">
                 {teamOptions.length > 0 ? (
                   teamOptions.map(team => (
@@ -421,13 +423,13 @@ const CreateEvent = () => {
                     </div>
                   ))
                 ) : (
-                  <p>No teams available</p>
+                  <p>{t('events.noTeamsAvailable')}</p>
                 )}
               </div>
             </div>
 
             <div className="form-group">
-              <label>Competences (optional)</label>
+              <label>{t('events.competencesOptional')}</label>
               <div className="checkbox-group">
                 {competenceOptions.length > 0 ? (
                   competenceOptions.map(competence => {
@@ -446,17 +448,17 @@ const CreateEvent = () => {
                     );
                   })
                 ) : (
-                  <p>No competences available</p>
+                  <p>{t('events.noCompetencesAvailable')}</p>
                 )}
               </div>
             </div>
           </div>
 
           <div className="form-section">
-            <h2>Location</h2>
+            <h2>{t('events.locationDetails')}</h2>
             
             <div className="form-group">
-              <label htmlFor="location.text">Address*</label>
+              <label htmlFor="location.text">{t('events.address')}</label>
               <input
                 type="text"
                 id="location.text"
@@ -469,7 +471,7 @@ const CreateEvent = () => {
             
             <div className="form-row">
               <div className="form-group half">
-                <label htmlFor="location.latitude">Latitude*</label>
+                <label htmlFor="location.latitude">{t('events.latitude')}</label>
                 <input
                   type="number"
                   step="any"
@@ -482,7 +484,7 @@ const CreateEvent = () => {
               </div>
               
               <div className="form-group half">
-                <label htmlFor="location.longitude">Longitude*</label>
+                <label htmlFor="location.longitude">{t('events.longitude')}</label>
                 <input
                   type="number"
                   step="any"
@@ -501,7 +503,7 @@ const CreateEvent = () => {
                 className="location-button"
                 onClick={getUserLocation}
               >
-                Use My Current Location
+                {t('events.useCurrentLocation')}
               </button>
               
               <button 
@@ -512,37 +514,37 @@ const CreateEvent = () => {
                       formData.location.latitude !== 0 && formData.location.longitude !== 0) {
                     reverseGeocode(formData.location.latitude, formData.location.longitude);
                   } else {
-                    alert('Please enter valid latitude and longitude coordinates first.');
+                    alert(t('events.coordinatesValidationAlert'));
                   }
                 }}
                 disabled={isGeocodingLoading}
               >
-                {isGeocodingLoading ? 'Getting Address...' : 'Get Address from Coordinates'}
+                {isGeocodingLoading ? t('events.gettingAddress') : t('events.getAddressFromCoords')}
               </button>
             </div>
             
             <div className="location-help">
               <p>
-                Need coordinates for a specific location? 
+                {t('events.needCoordinatesText')} 
                 <a 
                   href="https://www.gps-coordinates.net/" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="coordinates-link"
                 >
-                  Find latitude and longitude here →
+                  {t('events.findCoordinatesLink')}
                 </a>
               </p>
             </div>
           </div>
 
           <div className="form-section">
-            <h2>Additional Details</h2>
+            <h2>{t('events.additionalDetails')}</h2>
             
             {/* Always show for Volunteering opportunities */}
             {formData.markerType === 1 && (
               <div className="form-group">
-                <label htmlFor="people_needed">Number of Volunteers Needed*</label>
+                <label htmlFor="people_needed">{t('events.volunteersNeeded')}</label>
                 <input
                   type="number"
                   min="0"
@@ -570,13 +572,13 @@ const CreateEvent = () => {
                         }
                       }}
                     />
-                    <span className="toggle-text">This event needs volunteers</span>
+                    <span className="toggle-text">{t('events.volunteerToggleText')}</span>
                   </label>
                 </div>
                 
                 {showVolunteersForEvent && (
                   <div className="form-group volunteer-input">
-                    <label htmlFor="people_needed">Number of Volunteers Needed</label>
+                    <label htmlFor="people_needed">{t('events.volunteersNeededOptional')}</label>
                     <input
                       type="number"
                       min="0"
@@ -590,32 +592,19 @@ const CreateEvent = () => {
               </div>
             )}
             
-            {/* <div className="form-group">
-              <label htmlFor="event_xp">Experience Points (XP) for Event</label>
-              <input
-                type="number"
-                min="0"
-                id="event_xp"
-                name="event_xp"
-                value={formData.event_xp}
-                onChange={handleChange}
-                required
-              />
-            </div> */}
-            
             <div className="form-group">
-              <label htmlFor="main_image_url">Image URL</label>
+              <label htmlFor="main_image_url">{t('events.imageUrl')}</label>
               <input
                 type="url"
                 id="main_image_url"
                 name="main_image_url"
                 value={formData.main_image_url}
                 onChange={handleChange}
-                placeholder="https://example.com/image.jpg"
+                placeholder={t('events.imageUrlPlaceholder')}
               />
               {formData.main_image_url && (
                 <div className="image-preview">
-                  <img src={formData.main_image_url} alt="Event preview" />
+                  <img src={formData.main_image_url} alt={t('events.imagePreviewAlt')} />
                 </div>
               )}
             </div>
@@ -628,14 +617,14 @@ const CreateEvent = () => {
               onClick={() => navigate('/events')}
               disabled={loading}
             >
-              Cancel
+              {t('common.cancel')}
             </button>
             <button 
               type="submit" 
               className="submit-button" 
               disabled={loading}
             >
-              {loading ? 'Creating Event...' : 'Create Event'}
+              {loading ? t('events.creatingEvent') : t('events.createEventButton')}
             </button>
           </div>
         </form>

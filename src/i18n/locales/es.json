@@ -1,0 +1,89 @@
+{
+  "common": {
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "add": "Agregar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "clear": "Limpiar",
+    "confirm": "Confirmar",
+    "close": "Cerrar"
+  },
+  
+  "auth": {
+    "login": "Iniciar sesión",
+    "logout": "Cerrar sesión",
+    "register": "Registrarse",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar contraseña",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "loginTitle": "Portal de ONG - Iniciar sesión",
+    "loginSubtitle": "Accede al panel de tu organización",
+    "registerTitle": "Registrar tu ONG",
+    "loginButton": "Iniciar sesión",
+    "registerButton": "Registrar ONG",
+    "invalidCredentials": "Email o contraseña inválidos",
+    "loginSuccess": "¡Bienvenido de vuelta!",
+    "registerSuccess": "¡Registro exitoso!"
+  },
+  
+  "navigation": {
+    "dashboard": "Panel",
+    "events": "Eventos",
+    "profile": "Perfil",
+    "settings": "Configuración",
+    "help": "Ayuda",
+    "logout": "Cerrar sesión"
+  },
+  
+  "profile": {
+    "title": "Perfil de ONG",
+    "basicInfo": "Información básica",
+    "socialMedia": "Redes sociales",
+    "contactInfo": "Información de contacto",
+    "gallery": "Galería",
+    "organizationName": "Nombre de la organización",
+    "description": "Descripción",
+    "website": "Sitio web",
+    "founded": "Fundada",
+    "location": "Ubicación",
+    "addLink": "Agregar enlace",
+    "addContact": "Agregar contacto",
+    "addPhoto": "Agregar foto",
+    "noPhotos": "Aún no se han agregado fotos",
+    "noContacts": "Aún no se ha agregado información de contacto",
+    "noSocialLinks": "Aún no se han agregado enlaces de redes sociales"
+  },
+  
+  "events": {
+    "title": "Eventos",
+    "createEvent": "Crear evento",
+    "editEvent": "Editar evento",
+    "eventName": "Nombre del evento",
+    "eventDescription": "Descripción del evento",
+    "startDate": "Fecha de inicio",
+    "endDate": "Fecha de fin",
+    "location": "Ubicación",
+    "eventType": "Tipo de evento",
+    "volunteersNeeded": "Número de voluntarios necesarios",
+    "imageUrl": "URL de imagen",
+    "teams": "Equipos",
+    "competences": "Competencias",
+    "additionalDetails": "Detalles adicionales",
+    "basicInformation": "Información básica",
+    "locationDetails": "Detalles de ubicación",
+    "createSuccess": "¡Evento creado exitosamente!",
+    "updateSuccess": "¡Evento actualizado exitosamente!",
+    "deleteConfirm": "¿Estás seguro de que quieres eliminar este evento?",
+    "noEvents": "No se encontraron eventos"
+  }
+} 

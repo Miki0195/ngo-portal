@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import profileService from '../../services/profileService';
 import PhoneInput from 'react-phone-number-input';
 import { isValidPhoneNumber } from 'libphonenumber-js';
@@ -13,6 +14,7 @@ import {
 import '../../styles/Profile.css';
 
 const ContactInfo = () => {
+  const { t } = useTranslation();
   const [contactInfo, setContactInfo] = useState([]);
   const [contactTypeChoices, setContactTypeChoices] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -56,7 +58,7 @@ const ContactInfo = () => {
           ]);
         }
       } catch (err) {
-        setError('Failed to load contact information. Please try again later.');
+        setError(t('profile.failedToLoadContactInfo'));
         console.error(err);
       } finally {
         setLoading(false);
@@ -64,7 +66,7 @@ const ContactInfo = () => {
     };
 
     fetchData();
-  }, []);
+  }, [t]);
 
   // Handle form input changes
   const handleInputChange = (e) => {
@@ -152,7 +154,7 @@ const ContactInfo = () => {
         setError(response.error);
       }
     } catch (err) {
-      setError('Failed to add contact information. Please try again later.');
+      setError(t('profile.failedToAddContactInfo'));
       console.error(err);
     } finally {
       setLoading(false);
@@ -188,7 +190,7 @@ const ContactInfo = () => {
         setError(response.error);
       }
     } catch (err) {
-      setError('Failed to update contact information. Please try again later.');
+      setError(t('profile.failedToUpdateContactInfo'));
       console.error(err);
     } finally {
       setLoading(false);
@@ -197,7 +199,7 @@ const ContactInfo = () => {
 
   // Handle deleting contact info
   const handleDelete = async (index) => {
-    if (!window.confirm('Are you sure you want to delete this contact information?')) {
+    if (!window.confirm(t('profile.deleteContactConfirm'))) {
       return;
     }
     
@@ -214,7 +216,7 @@ const ContactInfo = () => {
         setError(response.error);
       }
     } catch (err) {
-      setError('Failed to delete contact information. Please try again later.');
+      setError(t('profile.failedToDeleteContactInfo'));
       console.error(err);
     } finally {
       setLoading(false);
@@ -291,7 +293,7 @@ const ContactInfo = () => {
           className="profile-form-input"
           value={formData.contact_info}
           onChange={handleInputChange}
-          placeholder="Contact information value"
+          placeholder={t('profile.contactInfoPlaceholder')}
           required
         />
       );
@@ -323,19 +325,19 @@ const ContactInfo = () => {
   };
 
   if (loading && contactInfo.length === 0) {
-    return <div className="profile-loading">Loading contact information...</div>;
+    return <div className="profile-loading">{t('profile.loadingContactInfo')}</div>;
   }
 
   return (
     <div className="profile-card">
       <div className="profile-card-header">
-        <h2>Contact Information</h2>
+        <h2>{t('profile.contactInformation')}</h2>
         {!isAddMode && editIndex === null && (
           <button 
             className="profile-edit-button" 
             onClick={() => setIsAddMode(true)}
           >
-            Add Contact
+            {t('profile.addContact')}
           </button>
         )}
       </div>
@@ -343,7 +345,7 @@ const ContactInfo = () => {
       <div className="profile-card-content">
         {error && (
           <div className="profile-error">
-            <p>Error: {error}</p>
+            <p>{t('common.error')}: {error}</p>
           </div>
         )}
         
@@ -356,7 +358,7 @@ const ContactInfo = () => {
                   <form onSubmit={handleUpdateSubmit} className="profile-link-edit-form">
                     <div className="profile-form-field">
                       <label className="profile-form-label" htmlFor="name">
-                        Name
+                        {t('profile.name')}
                       </label>
                       <input
                         id="name"
@@ -365,13 +367,13 @@ const ContactInfo = () => {
                         className="profile-form-input"
                         value={formData.name || ''}
                         onChange={handleInputChange}
-                        placeholder="e.g., Main Office, Support"
+                        placeholder={t('profile.contactPlaceholder')}
                       />
                     </div>
                     
                     <div className="profile-form-field">
                       <label className="profile-form-label" htmlFor="contact_type">
-                        Type
+                        {t('profile.type')}
                       </label>
                       <select
                         id="contact_type"
@@ -381,7 +383,7 @@ const ContactInfo = () => {
                         onChange={handleInputChange}
                         required
                       >
-                        <option value="">Select Contact Type</option>
+                        <option value="">{t('profile.selectContactType')}</option>
                         {contactTypeChoices.map((choice) => (
                           <option key={choice.value} value={choice.value}>
                             {choice.display_name}
@@ -392,7 +394,7 @@ const ContactInfo = () => {
                     
                     <div className="profile-form-field">
                       <label className="profile-form-label" htmlFor="contact_info">
-                        Value
+                        {t('profile.value')}
                       </label>
                       {renderContactInfoInput(true)}
                       {validationError && (
@@ -402,14 +404,14 @@ const ContactInfo = () => {
                     
                     <div className="profile-buttons">
                       <button type="submit" className="profile-edit-button" disabled={loading}>
-                        {loading ? 'Saving...' : 'Save Changes'}
+                        {loading ? t('profile.saving') : t('profile.saveChanges')}
                       </button>
                       <button 
                         type="button" 
                         className="profile-cancel-button"
                         onClick={cancelAction}
                       >
-                        Cancel
+                        {t('common.cancel')}
                       </button>
                     </div>
                   </form>
@@ -429,13 +431,13 @@ const ContactInfo = () => {
                         className="profile-action-button" 
                         onClick={() => startEditing(index)}
                       >
-                        Edit
+                        {t('common.edit')}
                       </button>
                       <button 
                         className="profile-action-button profile-delete-button" 
                         onClick={() => handleDelete(index)}
                       >
-                        Delete
+                        {t('common.delete')}
                       </button>
                     </div>
                   </>
@@ -445,7 +447,7 @@ const ContactInfo = () => {
           </div>
         ) : (
           <p className="profile-empty-message">
-            No contact information added yet.
+            {t('profile.noContactInfoAdded')}
           </p>
         )}
         
@@ -454,7 +456,7 @@ const ContactInfo = () => {
           <form onSubmit={handleAddSubmit} className="profile-form">
             <div className="profile-form-field">
               <label className="profile-form-label" htmlFor="new-name">
-                Name (Optional)
+                {t('profile.nameOptional')}
               </label>
               <input
                 id="new-name"
@@ -463,13 +465,13 @@ const ContactInfo = () => {
                 className="profile-form-input"
                 value={formData.name || ''}
                 onChange={handleInputChange}
-                placeholder="e.g., Main Office, Support"
+                placeholder={t('profile.contactPlaceholder')}
               />
             </div>
             
             <div className="profile-form-field">
               <label className="profile-form-label" htmlFor="new-contact_type">
-                Type
+                {t('profile.type')}
               </label>
               <select
                 id="new-contact_type"
@@ -479,7 +481,7 @@ const ContactInfo = () => {
                 onChange={handleInputChange}
                 required
               >
-                <option value="">Select Contact Type</option>
+                <option value="">{t('profile.selectContactType')}</option>
                 {contactTypeChoices.map((choice) => (
                   <option key={choice.value} value={choice.value}>
                     {choice.display_name}
@@ -490,7 +492,7 @@ const ContactInfo = () => {
             
             <div className="profile-form-field">
               <label className="profile-form-label" htmlFor="new-contact_info">
-                Value
+                {t('profile.value')}
               </label>
               {renderContactInfoInput(false)}
               {validationError && (
@@ -500,14 +502,14 @@ const ContactInfo = () => {
             
             <div className="profile-buttons">
               <button type="submit" className="profile-edit-button" disabled={loading}>
-                {loading ? 'Adding...' : 'Add Contact'}
+                {loading ? t('profile.addingContact') : t('profile.addContact')}
               </button>
               <button 
                 type="button" 
                 className="profile-cancel-button"
                 onClick={cancelAction}
               >
-                Cancel
+                {t('common.cancel')}
               </button>
             </div>
           </form>

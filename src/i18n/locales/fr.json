@@ -1,0 +1,36 @@
+{
+  "common": {
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "add": "Ajouter"
+  },
+  "auth": {
+    "login": "Connexion",
+    "logout": "Déconnexion",
+    "register": "S'inscrire",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "loginTitle": "Connexion Portail ONG",
+    "loginButton": "Se connecter",
+    "registerButton": "Inscrire ONG"
+  },
+  "navigation": {
+    "dashboard": "Tableau de bord",
+    "events": "Événements",
+    "profile": "Profil",
+    "settings": "Paramètres",
+    "logout": "Déconnexion"
+  },
+  "profile": {
+    "title": "Profil ONG",
+    "basicInfo": "Informations de base",
+    "socialMedia": "Réseaux sociaux",
+    "contactInfo": "Informations de contact",
+    "gallery": "Galerie"
+  }
+} 

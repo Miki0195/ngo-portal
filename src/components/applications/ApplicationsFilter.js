@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import '../../styles/ApplicationsFilter.css';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Component for filtering application data
@@ -26,6 +27,7 @@ const ApplicationsFilter = ({
   const [contentHeight, setContentHeight] = useState('0px');
   const contentRef = useRef(null);
   const initialRenderDone = useRef(false);
+  const { t } = useTranslation();
 
   // Handle expand/collapse animation
   useEffect(() => {
@@ -83,7 +85,7 @@ const ApplicationsFilter = ({
     <div className="applications-filter">
       <div className="filter-header" onClick={toggleExpand}>
         <h3>
-          Filter Applications
+          {t('applications.filterApplications')}
           {hasActiveFilters && (
             <span className="active-filters-badge">Active</span>
           )}
@@ -99,36 +101,36 @@ const ApplicationsFilter = ({
         <div className="filter-inner">
           <div className="filter-row">
             <div className="filter-field">
-              <label htmlFor="event-filter">Event</label>
+              <label htmlFor="event-filter">{t('applications.event')}</label>
               <select 
                 id="event-filter"
                 value={eventId}
                 onChange={handleEventChange}
               >
-                <option value="">All Events</option>
+                <option value="">{t('applications.allEvents')}</option>
                 {events.map(event => (
                   <option key={event.id} value={event.id}>
                     {event.eventName}
                   </option>
                 ))}
               </select>
-              <small className="filter-hint">Filter applications by specific event</small>
+              <small className="filter-hint">{t('applications.filterApplicationsByEvent')}</small>
             </div>
             
             <div className="filter-field">
-              <label htmlFor="status-filter">Status</label>
+              <label htmlFor="status-filter">{t('applications.status')}</label>
               <select 
                 id="status-filter"
                 value={status}
                 onChange={handleStatusChange}
               >
-                <option value="">All Statuses</option>
-                <option value="applied">Applied</option>
-                <option value="accepted">Accepted</option>
-                <option value="waitlisted">Waitlisted</option>
-                <option value="completed">Completed</option>
+                <option value="">{t('applications.allStatuses')}</option>
+                <option value="applied">{t('applications.applied')}</option>
+                <option value="accepted">{t('applications.accepted')}</option>
+                <option value="waitlisted">{t('applications.waitlisted')}</option>
+                <option value="completed">{t('applications.completed')}</option>
               </select>
-              <small className="filter-hint">Filter by application status</small>
+              <small className="filter-hint">{t('applications.filterBy')}</small>
             </div>
           </div>
           
@@ -139,14 +141,14 @@ const ApplicationsFilter = ({
               disabled={loading}
             >
               {loading && <span className="loading-indicator"></span>}
-              Apply Filters
+              {t('applications.applyFilters')}
             </button>
             <button 
               className="reset-filters"
               onClick={resetFilters}
               disabled={loading}
             >
-              Reset
+              {t('applications.reset')}
             </button>
           </div>
         </div>

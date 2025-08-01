@@ -1,113 +1,96 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next'; // Add i18n hook
 import authService from '../../services/authService';
 import '../../styles/Login.css';
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-  const [loading, setLoading] = useState(false);
+  const { t } = useTranslation(); // Similar to Laravel's @lang helper
   const navigate = useNavigate();
-  const location = useLocation();
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
 
-  useEffect(() => {
-    // Debug: Log the API URL being used
-    console.log('API URL:', process.env.REACT_APP_API_URL || 'http://localhost:8000');
-    
-    const params = new URLSearchParams(location.search);
-    const errorParam = params.get('error');
-    
-    if (errorParam) {
-      setError(errorParam);
-      
-      const newUrl = window.location.pathname;
-      window.history.replaceState({}, document.title, newUrl);
-    }
-
-    // Check for success message from registration
-    if (location.state?.message) {
-      setSuccess(location.state.message);
-      // Clear the state to prevent showing the message on refresh
-      window.history.replaceState({}, document.title, location.pathname);
-    }
-  }, [location]);
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
     setLoading(true);
+    setError('');
     
-    if (!email || !password) {
-      setError('Email and password are required');
-      setLoading(false);
-      return;
-    }
+    const result = await authService.login(formData.email, formData.password);
     
-    console.log('Attempting login with:', { email, baseURL: process.env.REACT_APP_API_URL });
-    
-    try {
-      const response = await authService.login(email, password);
-      
-      console.log('Login response:', response);
-      
-      if (response.success) {
+    if (result.success) {
+      setSuccessMessage(t('auth.loginSuccess')); // Using translation
+      setTimeout(() => {
         navigate('/dashboard');
-      } else {
-        setError(response.error);
-      }
-    } catch (err) {
-      console.error('Login error:', err);
-      setError('An unexpected error occurred. Please try again.');
-    } finally {
-      setLoading(false);
+      }, 1000);
+    } else {
+      setError(result.error || t('auth.invalidCredentials')); // Using translation
     }
+    
+    setLoading(false);
   };
 
   return (
     <div className="login-container">
-      <div className="login-form-box">
-        <h1 className="login-title">NGO Portal Login</h1>
+      <div className="login-form-wrapper">
         <form className="login-form" onSubmit={handleSubmit}>
+          <div className="login-header">
+            <h1>{t('auth.loginTitle')}</h1> {/* Using translation */}
+            <p>{t('auth.loginSubtitle')}</p> {/* Using translation */}
+          </div>
+
           {error && <div className="error-message">{error}</div>}
-          {success && <div className="success-message">{success}</div>}
-          
+          {successMessage && <div className="success-message">{successMessage}</div>}
+
           <div className="form-group">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">{t('auth.email')}</label> {/* Using translation */}
             <input
               type="email"
               id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
               required
+              autocomplete="email"
             />
           </div>
-          
+
           <div className="form-group">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">{t('auth.password')}</label> {/* Using translation */}
             <input
               type="password"
               id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
               required
+              autocomplete="current-password"
             />
           </div>
-          
+
           <button 
             type="submit" 
             className="login-button" 
             disabled={loading}
           >
-            {loading ? 'Logging in...' : 'Login'}
+            {loading ? t('common.loading') : t('auth.loginButton')} {/* Using translation */}
           </button>
 
-          <div className="form-footer">
-            <p>Don't have an account? <Link to="/register" className="register-link">Register your NGO</Link></p>
+          <div className="login-links">
+            <Link to="/register" className="register-link">
+              {t('auth.registerButton')} {/* Using translation */}
+            </Link>
           </div>
         </form>
       </div>

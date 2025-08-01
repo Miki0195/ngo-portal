@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import profileService from '../../services/profileService';
 import authService from '../../services/authService';
 import '../../styles/Profile.css';
 
 const NGOProfile = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -42,7 +44,7 @@ const NGOProfile = () => {
           setError(response.error);
         }
       } catch (err) {
-        setError('Failed to load profile data. Please try again later.');
+        setError(t('profile.failedToLoadContactInfo'));
         console.error(err);
       } finally {
         setLoading(false);
@@ -50,7 +52,7 @@ const NGOProfile = () => {
     };
 
     fetchProfile();
-  }, [navigate]);
+  }, [navigate, t]);
 
   // Handle form input changes
   const handleInputChange = (e) => {
@@ -76,7 +78,7 @@ const NGOProfile = () => {
         setError(response.error);
       }
     } catch (err) {
-      setError('Failed to update profile. Please try again later.');
+      setError(t('profile.failedToUpdateContactInfo'));
       console.error(err);
     } finally {
       setLoading(false);
@@ -84,19 +86,19 @@ const NGOProfile = () => {
   };
 
   if (loading && !profile) {
-    return <div className="profile-loading">Loading profile data...</div>;
+    return <div className="profile-loading">{t('profile.loadingProfile')}</div>;
   }
 
   if (error && !profile) {
     return (
       <div className="profile-container">
         <div className="profile-error">
-          <p>Error: {error}</p>
+          <p>{t('common.error')}: {error}</p>
           <button 
             className="profile-edit-button" 
             onClick={() => window.location.reload()}
           >
-            Try Again
+            {t('profile.tryAgain')}
           </button>
         </div>
       </div>
@@ -106,13 +108,13 @@ const NGOProfile = () => {
   return (
     <div className="profile-container">
       <div className="profile-header">
-        <h1>NGO Profile</h1>
-        <p className="profile-subtitle">View and manage your organization's information</p>
+        <h1>{t('profile.title')}</h1>
+        <p className="profile-subtitle">{t('profile.subtitle')}</p>
       </div>
 
       {error && (
         <div className="profile-error">
-          <p>Error: {error}</p>
+          <p>{t('common.error')}: {error}</p>
         </div>
       )}
 
@@ -120,34 +122,34 @@ const NGOProfile = () => {
       <div className="profile-stats">
         <div className="profile-stat-card">
           <div className="profile-stat-value">{profile?.volunteer_count || 0}</div>
-          <div className="profile-stat-label">Volunteers</div>
+          <div className="profile-stat-label">{t('profile.volunteers')}</div>
         </div>
         <div className="profile-stat-card">
           <div className="profile-stat-value">{profile?.event_count || 0}</div>
-          <div className="profile-stat-label">Events</div>
+          <div className="profile-stat-label">{t('profile.events')}</div>
         </div>
         <div className="profile-stat-card">
           <div className="profile-stat-value">{profile?.total_xp || 0}</div>
-          <div className="profile-stat-label">Total XP</div>
+          <div className="profile-stat-label">{t('profile.totalXP')}</div>
         </div>
         <div className="profile-stat-card">
           <div className="profile-stat-value">
             {profile?.avg_rating ? profile.avg_rating.toFixed(1) : '0.0'}
           </div>
-          <div className="profile-stat-label">Avg. Rating ({profile?.total_ratings || 0})</div>
+          <div className="profile-stat-label">{t('profile.avgRating')} ({profile?.total_ratings || 0})</div>
         </div>
       </div>
 
       {/* Main Profile Card */}
       <div className="profile-card">
         <div className="profile-card-header">
-          <h2>Organization Information</h2>
+          <h2>{t('profile.organizationInformation')}</h2>
           {!isEditMode ? (
             <button 
               className="profile-edit-button" 
               onClick={() => setIsEditMode(true)}
             >
-              Edit Profile
+              {t('profile.editProfile')}
             </button>
           ) : null}
         </div>
@@ -158,40 +160,40 @@ const NGOProfile = () => {
             <>
               <div className="profile-section">
                 <div className="profile-field">
-                  <div className="profile-field-label">Organization Name</div>
-                  <div className="profile-field-value">{profile?.name || <span className="profile-field-empty">Not specified</span>}</div>
+                  <div className="profile-field-label">{t('profile.organizationName')}</div>
+                  <div className="profile-field-value">{profile?.name || <span className="profile-field-empty">{t('profile.notSpecified')}</span>}</div>
                 </div>
               </div>
               
               <div className="profile-section">
-                <h3>About</h3>
+                <h3>{t('profile.about')}</h3>
                 <div className="profile-field-value">
                   {profile?.about ? (
                     <p>{profile.about}</p>
                   ) : (
-                    <p className="profile-field-empty">No information provided</p>
+                    <p className="profile-field-empty">{t('profile.noInformationProvided')}</p>
                   )}
                 </div>
               </div>
               
               <div className="profile-section">
-                <h3>History</h3>
+                <h3>{t('profile.history')}</h3>
                 <div className="profile-field-value">
                   {profile?.history ? (
                     <p>{profile.history}</p>
                   ) : (
-                    <p className="profile-field-empty">No history provided</p>
+                    <p className="profile-field-empty">{t('profile.noHistoryProvided')}</p>
                   )}
                 </div>
               </div>
               
               <div className="profile-section">
-                <h3>Contact Person Bio</h3>
+                <h3>{t('profile.contactPersonBio')}</h3>
                 <div className="profile-field-value">
                   {profile?.contact_person_bio ? (
                     <p>{profile.contact_person_bio}</p>
                   ) : (
-                    <p className="profile-field-empty">No contact person bio provided</p>
+                    <p className="profile-field-empty">{t('profile.noContactPersonBio')}</p>
                   )}
                 </div>
               </div>
@@ -201,7 +203,7 @@ const NGOProfile = () => {
             <form onSubmit={handleSubmit}>
               <div className="profile-form-field">
                 <label className="profile-form-label" htmlFor="name">
-                  Organization Name
+                  {t('profile.organizationName')}
                 </label>
                 <input
                   id="name"
@@ -216,7 +218,7 @@ const NGOProfile = () => {
               
               <div className="profile-form-field">
                 <label className="profile-form-label" htmlFor="about">
-                  About
+                  {t('profile.about')}
                 </label>
                 <textarea
                   id="about"
@@ -224,13 +226,13 @@ const NGOProfile = () => {
                   className="profile-form-textarea"
                   value={formData.about}
                   onChange={handleInputChange}
-                  placeholder="Tell people about your organization..."
+                  placeholder={t('profile.aboutPlaceholder')}
                 ></textarea>
               </div>
               
               <div className="profile-form-field">
                 <label className="profile-form-label" htmlFor="history">
-                  History
+                  {t('profile.history')}
                 </label>
                 <textarea
                   id="history"
@@ -238,13 +240,13 @@ const NGOProfile = () => {
                   className="profile-form-textarea"
                   value={formData.history}
                   onChange={handleInputChange}
-                  placeholder="Share your organization's history..."
+                  placeholder={t('profile.historyPlaceholder')}
                 ></textarea>
               </div>
               
               <div className="profile-form-field">
                 <label className="profile-form-label" htmlFor="contact_person_bio">
-                  Contact Person Bio
+                  {t('profile.contactPersonBio')}
                 </label>
                 <textarea
                   id="contact_person_bio"
@@ -252,13 +254,13 @@ const NGOProfile = () => {
                   className="profile-form-textarea"
                   value={formData.contact_person_bio}
                   onChange={handleInputChange}
-                  placeholder="Provide information about the primary contact person..."
+                  placeholder={t('profile.contactPersonBioPlaceholder')}
                 ></textarea>
               </div>
               
               <div className="profile-buttons">
                 <button type="submit" className="profile-edit-button" disabled={loading}>
-                  {loading ? 'Saving...' : 'Save Changes'}
+                  {loading ? t('profile.saving') : t('profile.saveChanges')}
                 </button>
                 <button 
                   type="button" 
@@ -274,7 +276,7 @@ const NGOProfile = () => {
                     });
                   }}
                 >
-                  Cancel
+                  {t('common.cancel')}
                 </button>
               </div>
             </form>
