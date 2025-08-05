@@ -4,6 +4,14 @@
   align-items: center;
   min-height: 100vh;
   background-color: #f5f7fa;
+  position: relative;
+}
+
+.language-picker-container {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 100;
 }
 
 .login-form-box {

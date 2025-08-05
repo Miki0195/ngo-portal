@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next'; // Add i18n hook
 import authService from '../../services/authService';
+import LanguagePicker from '../common/LanguagePicker';
 import '../../styles/Login.css';
 
 const Login = () => {
@@ -43,6 +44,9 @@ const Login = () => {
 
   return (
     <div className="login-container">
+      <div className="language-picker-container">
+        <LanguagePicker />
+      </div>
       <div className="login-form-wrapper">
         <form className="login-form" onSubmit={handleSubmit}>
           <div className="login-header">

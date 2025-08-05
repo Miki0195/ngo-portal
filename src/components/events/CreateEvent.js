@@ -15,7 +15,6 @@ const CreateEvent = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const [teamOptions, setTeamOptions] = useState([]);
-  const [competenceOptions, setCompetenceOptions] = useState([]);
   const user = authService.getCurrentUser();
 
   // State for form data
@@ -29,17 +28,22 @@ const CreateEvent = () => {
     event_xp: 0,
     main_image_url: '',
     focus_teams: [], 
-    competences: [], 
+    competences: '', // Changed from array to string
     location: {
       latitude: 0,
       longitude: 0,
       text: ''
-    }
+    },
+    // Recurring event fields
+    recurrence_type: 'none',
+    recurrence_interval: 1,
+    recurrence_end_date: ''
   });
 
   // State for optional volunteers toggle (for Event type)
   const [showVolunteersForEvent, setShowVolunteersForEvent] = useState(false);
   const [isGeocodingLoading, setIsGeocodingLoading] = useState(false);
+  const [recurringPreview, setRecurringPreview] = useState([]);
 
   // Fetch team and competence options
   useEffect(() => {
@@ -52,9 +56,7 @@ const CreateEvent = () => {
           if (data.teams && data.teams.length > 0) {
             setTeamOptions(data.teams);
           }
-          if (data.competences && data.competences.length > 0) {
-            setCompetenceOptions(data.competences);
-          }
+          // Removed competence options fetching
         } else {
           console.error('Failed to fetch filtering options');
         }
@@ -103,7 +105,7 @@ const CreateEvent = () => {
     } else {
       setFormData(prev => ({
         ...prev,
-        [name]: name === 'markerType' || name === 'people_needed' || name === 'event_xp'
+        [name]: name === 'markerType' || name === 'people_needed' || name === 'event_xp' || name === 'recurrence_interval'
           ? parseInt(value, 10) || 0
           : value
       }));
@@ -116,7 +118,49 @@ const CreateEvent = () => {
           setFormData(prev => ({ ...prev, people_needed: 0 }));
         }
       }
+      
+      // Update recurring preview for relevant fields
+      if (['startDate', 'endDate', 'recurrence_type', 'recurrence_interval', 'recurrence_end_date'].includes(name)) {
+        const newFormData = {
+          ...formData,
+          [name]: name === 'recurrence_interval' ? (parseInt(value, 10) || 1) : value
+        };
+        updateRecurringPreview(newFormData);
+      }
     }
+  };
+
+  // Helper function to get translated team name
+  const getTranslatedTeamName = (teamName) => {
+    // Normalize team name: convert spaces to underscores and make uppercase
+    const normalizedTeamName = teamName.replace(/\s+/g, '_').toUpperCase();
+    
+    // Convert team name to translation key format
+    const translationKey = `constants.teams.${normalizedTeamName}`;
+    const translated = t(translationKey);
+    
+    // If translation doesn't exist, fallback to original name
+    return translated !== translationKey ? translated : teamName;
+  };
+
+  // Helper function to get translated marker type name
+  const getTranslatedMarkerType = (markerTypeId) => {
+    const markerTypeMap = {
+      1: 'VO', // Volunteering opportunity
+      2: 'SE'  // Sustainable event (Event)
+    };
+    
+    const markerKey = markerTypeMap[markerTypeId];
+    if (markerKey) {
+      return t(`constants.markerTypes.${markerKey}`);
+    }
+    
+    // Fallback to hardcoded names
+    const fallbackMap = {
+      1: 'Volunteering opportunity',
+      2: 'Event'
+    };
+    return fallbackMap[markerTypeId] || 'Unknown';
   };
 
   const handleDateChange = (e) => {
@@ -124,10 +168,17 @@ const CreateEvent = () => {
     
     const date = new Date(value);
     
-    setFormData(prev => ({
-      ...prev,
-      [name]: value 
-    }));
+    setFormData(prev => {
+      const newFormData = {
+        ...prev,
+        [name]: value 
+      };
+      
+      // Update recurring preview when dates change
+      updateRecurringPreview(newFormData);
+      
+      return newFormData;
+    });
   };
 
   const handleTeamCheckbox = (teamId) => {
@@ -145,24 +196,6 @@ const CreateEvent = () => {
           focus_teams: [...prev.focus_teams, teamId]
         };
       }
-    });
-  };
-
-  const handleCompetenceCheckbox = (competenceId) => {
-    setFormData(prev => {
-      const isSelected = prev.competences.includes(competenceId);
-      
-      let updatedCompetences;
-      if (isSelected) {
-        updatedCompetences = prev.competences.filter(id => id !== competenceId);
-      } else {
-        updatedCompetences = [...prev.competences, competenceId];
-      }
-      
-      return {
-        ...prev,
-        competences: updatedCompetences
-      };
     });
   };
 
@@ -228,7 +261,7 @@ const CreateEvent = () => {
       }));
       
       eventDataToSubmit.focus_teams = Array.isArray(formData.focus_teams) ? formData.focus_teams : [];
-      eventDataToSubmit.competences = Array.isArray(formData.competences) ? formData.competences : [];
+      // competences is now a string, no need for array conversion
       
       const response = await eventService.createEvent(eventDataToSubmit);
       
@@ -319,6 +352,75 @@ const CreateEvent = () => {
     }
   };
 
+  // Calculate recurring event preview
+  const calculateRecurringPreview = (startDate, endDate, recurrenceType, interval, endDate2) => {
+    if (!startDate || !endDate || recurrenceType === 'none') {
+      return [];
+    }
+
+    const preview = [];
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const recurEnd = endDate2 ? new Date(endDate2) : null;
+    
+    let currentStart = new Date(start);
+    let currentEnd = new Date(end);
+
+    // Add first event (original)
+    preview.push({
+      start: new Date(currentStart),
+      end: new Date(currentEnd)
+    });
+
+    // Calculate recurring instances
+    for (let i = 0; i < 10; i++) { // Limit preview to 10 instances
+      switch (recurrenceType) {
+        case 'daily':
+          currentStart.setDate(currentStart.getDate() + interval);
+          currentEnd.setDate(currentEnd.getDate() + interval);
+          break;
+        case 'weekly':
+          currentStart.setDate(currentStart.getDate() + (interval * 7));
+          currentEnd.setDate(currentEnd.getDate() + (interval * 7));
+          break;
+        case 'monthly':
+          currentStart.setMonth(currentStart.getMonth() + interval);
+          currentEnd.setMonth(currentEnd.getMonth() + interval);
+          break;
+        case 'yearly':
+          currentStart.setFullYear(currentStart.getFullYear() + interval);
+          currentEnd.setFullYear(currentEnd.getFullYear() + interval);
+          break;
+        default:
+          return preview;
+      }
+
+      // Check if we've exceeded the end date
+      if (recurEnd && currentStart > recurEnd) {
+        break;
+      }
+
+      preview.push({
+        start: new Date(currentStart),
+        end: new Date(currentEnd)
+      });
+    }
+
+    return preview;
+  };
+
+  // Update recurring preview when relevant fields change
+  const updateRecurringPreview = (newFormData) => {
+    const preview = calculateRecurringPreview(
+      newFormData.startDate,
+      newFormData.endDate,
+      newFormData.recurrence_type,
+      newFormData.recurrence_interval,
+      newFormData.recurrence_end_date
+    );
+    setRecurringPreview(preview);
+  };
+
   return (
     <div className="create-event-container">
       <div className="create-event-header">
@@ -386,6 +488,78 @@ const CreateEvent = () => {
               </div>
             </div>
             
+            {/* Recurring Events Section */}
+            <div className="form-group">
+              <h3 className="recurring-section-title">{t('events.recurringEvents')}</h3>
+              
+              <div className="form-row">
+                <div className="form-group half">
+                  <label htmlFor="recurrence_type">{t('events.recurrenceType')}</label>
+                  <select
+                    id="recurrence_type"
+                    name="recurrence_type"
+                    value={formData.recurrence_type}
+                    onChange={handleChange}
+                  >
+                    <option value="none">{t('events.recurrenceNone')}</option>
+                    <option value="daily">{t('events.recurrenceDaily')}</option>
+                    <option value="weekly">{t('events.recurrenceWeekly')}</option>
+                    <option value="monthly">{t('events.recurrenceMonthly')}</option>
+                    <option value="yearly">{t('events.recurrenceYearly')}</option>
+                  </select>
+                </div>
+                
+                {formData.recurrence_type !== 'none' && (
+                  <div className="form-group half">
+                    <label htmlFor="recurrence_interval">
+                      {t('events.recurrenceInterval')} {formData.recurrence_type !== 'none' && 
+                        t(`events.recurrenceInterval${formData.recurrence_type.charAt(0).toUpperCase() + formData.recurrence_type.slice(1).replace('ly', 's')}`)}
+                    </label>
+                    <input
+                      type="number"
+                      id="recurrence_interval"
+                      name="recurrence_interval"
+                      value={formData.recurrence_interval}
+                      onChange={handleChange}
+                      min="1"
+                      max="365"
+                    />
+                  </div>
+                )}
+              </div>
+              
+              {formData.recurrence_type !== 'none' && (
+                <div className="form-group">
+                  <label htmlFor="recurrence_end_date">{t('events.recurrenceEndDate')}</label>
+                  <input
+                    type="datetime-local"
+                    id="recurrence_end_date"
+                    name="recurrence_end_date"
+                    value={formData.recurrence_end_date}
+                    onChange={handleChange}
+                  />
+                  <p className="help-text">{t('events.recurrenceEndDateHelp')}</p>
+                </div>
+              )}
+              
+              {formData.recurrence_type !== 'none' && recurringPreview.length > 1 && (
+                <div className="recurring-preview">
+                  <h4>{t('events.recurrencePreview')}</h4>
+                  <ul className="preview-list">
+                    {recurringPreview.slice(0, 5).map((event, index) => (
+                      <li key={index} className="preview-item">
+                        {event.start.toLocaleDateString()} {event.start.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - 
+                        {event.end.toLocaleDateString()} {event.end.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                      </li>
+                    ))}
+                    {recurringPreview.length > 5 && (
+                      <li className="preview-more">...and {recurringPreview.length - 5} more</li>
+                    )}
+                  </ul>
+                </div>
+              )}
+            </div>
+            
             <div className="form-row">
               <div className="form-group half">
                 <label htmlFor="markerType">{t('events.eventType')}</label>
@@ -397,7 +571,7 @@ const CreateEvent = () => {
                   required
                 >
                   {markerTypes.map(type => (
-                    <option key={type.id} value={type.id}>{type.name}</option>
+                    <option key={type.id} value={type.id}>{getTranslatedMarkerType(type.id)}</option>
                   ))}
                 </select>
               </div>
@@ -419,7 +593,7 @@ const CreateEvent = () => {
                         checked={formData.focus_teams.includes(team.id)}
                         onChange={() => handleTeamCheckbox(team.id)}
                       />
-                      <label htmlFor={`team-${team.id}`}>{team.name}</label>
+                      <label htmlFor={`team-${team.id}`}>{getTranslatedTeamName(team.name)}</label>
                     </div>
                   ))
                 ) : (
@@ -431,25 +605,16 @@ const CreateEvent = () => {
             <div className="form-group">
               <label>{t('events.competencesOptional')}</label>
               <div className="checkbox-group">
-                {competenceOptions.length > 0 ? (
-                  competenceOptions.map(competence => {
-                    const competenceId = competence.name; // Using name as the ID - should create IDs for competences
-                    
-                    return (
-                      <div key={competenceId} className="checkbox-item">
-                        <input
-                          type="checkbox"
-                          id={`competence-${competenceId}`}
-                          checked={formData.competences.includes(competenceId)}
-                          onChange={() => handleCompetenceCheckbox(competenceId)}
-                        />
-                        <label htmlFor={`competence-${competenceId}`}>{competence.name}</label>
-                      </div>
-                    );
-                  })
-                ) : (
-                  <p>{t('events.noCompetencesAvailable')}</p>
-                )}
+                {/* Replaced checkbox group with a simple text input */}
+                <input
+                  type="text"
+                  id="competences"
+                  name="competences"
+                  value={formData.competences}
+                  onChange={handleChange}
+                  placeholder={t('events.competencesPlaceholder')}
+                />
+                <p className="competences-help">{t('events.competencesHelp')}</p>
               </div>
             </div>
           </div>

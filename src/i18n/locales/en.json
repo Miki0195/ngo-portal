@@ -44,6 +44,48 @@
     "registerSuccess": "Registration successful!"
   },
   
+  "registration": {
+    "title": "NGO Registration",
+    "subtitle": "Join our platform to manage your organization",
+    "organizationInformation": "Organization Information",
+    "contactPersonInformation": "Contact Person Information",
+    "accountSecurity": "Account Security",
+    "organizationOfferings": "What does your organization offer?",
+    "organizationName": "Organization Name",
+    "organizationNamePlaceholder": "Enter your organization name",
+    "website": "Website",
+    "websitePlaceholder": "https://yourorganization.org",
+    "registrationNumber": "Registration Number (matična)",
+    "registrationNumberPlaceholder": "Official registration number",
+    "operatingCountries": "Operating Countries",
+    "operatingCountriesPlaceholder": "e.g., USA, Canada, Mexico",
+    "firstName": "First Name",
+    "firstNamePlaceholder": "First name",
+    "lastName": "Last Name",
+    "lastNamePlaceholder": "Last name",
+    "emailAddress": "Email Address",
+    "emailPlaceholder": "contact@yourorganization.org",
+    "emailAddressPlaceholder": "contact@yourorganization.org",
+    "phoneNumber": "Phone Number",
+    "phonePlaceholder": "+1-555-123-4567",
+    "phoneNumberPlaceholder": "+1-555-123-4567",
+    "password": "Password",
+    "passwordPlaceholder": "Minimum 8 characters",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Confirm your password",
+    "registerButton": "Register Organization",
+    "registering": "Registering...",
+    "alreadyHaveAccount": "Already have an account?",
+    "loginHere": "Login here",
+    "fieldRequired": "is required",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "passwordMinLength": "Password must be at least 8 characters long",
+    "invalidEmail": "Please enter a valid email address",
+    "invalidWebsite": "Please enter a valid website URL (starting with http:// or https://)",
+    "unexpectedError": "An unexpected error occurred. Please try again.",
+    "registrationSuccessful": "Registration successful! Please login with your credentials."
+  },
+  
   "navigation": {
     "dashboard": "Dashboard",
     "events": "Events",
@@ -78,6 +120,31 @@
     "teams": "Teams",
     "competences": "Competences (optional)",
     "competencesOptional": "Competences (optional)",
+    "competencesPlaceholder": "e.g., Marketing, Event Management, Social Media",
+    "competencesHelp": "Enter skills or competences separated by commas",
+    "recurringEvents": "Recurring Events",
+    "recurrenceType": "Repeat",
+    "recurrenceNone": "No recurrence",
+    "recurrenceDaily": "Daily",
+    "recurrenceWeekly": "Weekly",
+    "recurrenceMonthly": "Monthly",
+    "recurrenceYearly": "Yearly",
+    "recurrenceInterval": "Repeat every",
+    "recurrenceIntervalDays": "day(s)",
+    "recurrenceIntervalWeeks": "week(s)",
+    "recurrenceIntervalMonths": "month(s)",
+    "recurrenceIntervalYears": "year(s)",
+    "recurrenceEndDate": "Stop repeating after",
+    "recurrenceEndDateHelp": "Leave empty to repeat indefinitely",
+    "recurrencePreview": "This will create events on:",
+    "recurringEvent": "Recurring Event",
+    "recurringPattern": "Recurring Pattern",
+    "recurringUntil": "Until",
+    "recurringIndefinitely": "Repeats indefinitely",
+    "partOfSeries": "Part of recurring series",
+    "viewSeries": "View Series",
+    "parentEvent": "Original Event",
+    "recurringInstance": "Recurring Instance",
     "noTeamsAvailable": "No teams available",
     "noCompetencesAvailable": "No competences available",
     "basicInformation": "Basic Information",
@@ -254,5 +321,69 @@
     "welcome": "Welcome",
     "successfullyLogedIn": "You are successfully logged in to your NGO portal.",
     "ngoInfo": "Your NGO Information"
+  },
+  
+  "constants": {
+    "teams": {
+      "ENVIRONMENTAL": "Environmental",
+      "SOCIAL": "Social", 
+      "HEALTH_AND_MEDICAL": "Health and Medical",
+      "EDUCATIONAL": "Educational",
+      "HUMANITARIAN_AND_EMERGENCY_RESPONSE": "Humanitarian and Emergency Response",
+      "ANIMAL_WELFARE": "Animal Welfare",
+      "CULTURAL_AND_HERITAGE": "Cultural and Heritage",
+      "ADVOCACY_AND_HUMAN_RIGHTS": "Advocacy and Human Rights",
+      "SPORTS_AND_RECREATION": "Sports and Recreation",
+      "TECHNOLOGY_AND_INNOVATION": "Technology and Innovation",
+      "FAITH_AND_SPIRITUAL": "Faith and Spiritual",
+      "ADVOCACY_AND_LEGAL": "Advocacy and Legal",
+      "OTHER": "Other"
+    },
+    "markerTypes": {
+      "VO": "Volunteering opportunity",
+      "SE": "Event"
+    },
+    "eventStatuses": {
+      "applied": "Applied",
+      "accepted": "Accepted", 
+      "waitlisted": "Waitlisted",
+      "completed": "Completed"
+    },
+    "socialPlatforms": {
+      "Instagram": "Instagram",
+      "LinkedIn": "LinkedIn",
+      "TikTok": "TikTok", 
+      "Facebook": "Facebook",
+      "YouTube": "YouTube"
+    },
+    "contactTypes": {
+      "Phone": "Phone",
+      "E-mail": "E-mail"
+    },
+    "ngoOfferings": {
+      "VOLUNTEERING": "Volunteering",
+      "EVENTS": "Events",
+      "DONATIONS": "Donations", 
+      "PETITIONS": "Petitions",
+      "PRODUCTS_OR_SERVICES": "Products or Services"
+    },
+    "developmentStages": {
+      "Eco Pioneer": "Eco Pioneer",
+      "Biosphere Guardian": "Biosphere Guardian",
+      "Gaia's Emissary": "Gaia's Emissary", 
+      "Planet Healer": "Planet Healer",
+      "Cosmic Steward": "Cosmic Steward"
+    },
+    "animalCategories": {
+      "Horror": "Horror",
+      "Fantasy": "Fantasy",
+      "Legendary": "Legendary"
+    },
+    "babyAnimals": {
+      "Modern dragons": "Modern Dragons",
+      "Forest's dead man": "Forest's Dead Man",
+      "Cuties": "Cuties",
+      "Alien predator": "Alien Predator"
+    }
   }
 } 

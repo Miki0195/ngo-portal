@@ -5,6 +5,14 @@
   min-height: 100vh;
   background-color: #f5f7fa;
   padding: 20px;
+  position: relative;
+}
+
+.language-picker-container {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 100;
 }
 
 .register-form-box {

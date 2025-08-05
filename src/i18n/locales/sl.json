@@ -43,6 +43,49 @@
     "loginSuccess": "Dobrodošli nazaj!",
     "registerSuccess": "Uspešna registracija!"
   },
+
+  "registration": {
+    "title": "Registracija NVO",
+    "subtitle": "Pridružite se naši platformi za upravljanje vaše organizacije",
+    "organizationInformation": "Podatki o organizaciji",
+    "contactPersonInformation": "Podatki kontaktne osebe",
+    "accountSecurity": "Varnost računa",
+    "organizationOfferings": "Kaj vaša organizacija ponuja?",
+    "organizationName": "Ime organizacije",
+    "organizationNamePlaceholder": "Vnesite ime vaše organizacije",
+    "website": "Spletna stran",
+    "websitePlaceholder": "https://vasaorganizacija.org",
+    "registrationNumber": "Registrska številka (matična)",
+    "registrationNumberPlaceholder": "Uradna registrska številka",
+    "operatingCountries": "Države delovanja",
+    "operatingCountriesPlaceholder": "npr. Slovenija, Hrvaška, Avstrija",
+    "firstName": "Ime",
+    "firstNamePlaceholder": "Ime",
+    "lastName": "Priimek",
+    "lastNamePlaceholder": "Priimek",
+    "emailAddress": "E-poštni naslov",
+    "emailPlaceholder": "kontakt@vasaorganizacija.org",
+    "emailAddressPlaceholder": "kontakt@vasaorganizacija.org",
+    "phoneNumber": "Telefonska številka",
+    "phonePlaceholder": "+386-40-123-456",
+    "phoneNumberPlaceholder": "+386-40-123-456",
+    "password": "Geslo",
+    "passwordPlaceholder": "Najmanj 8 znakov",
+    "confirmPassword": "Potrdi geslo",
+    "confirmPasswordPlaceholder": "Potrdite svoje geslo",
+    "registerButton": "Registriraj organizacijo",
+    "registering": "Registracija...",
+    "alreadyHaveAccount": "Že imate račun?",
+    "loginHere": "Prijavite se tukaj",
+    "fieldRequired": "je obvezno polje",
+    "passwordsDoNotMatch": "Gesli se ne ujemata",
+    "passwordMinLength": "Geslo mora vsebovati najmanj 8 znakov",
+    "invalidEmail": "Vnesite veljaven e-poštni naslov",
+    "invalidWebsite": "Vnesite veljaven URL spletne strani (ki se začne s http:// ali https://)",
+    "unexpectedError": "Prišlo je do nepričakovane napake. Poskusite znova.",
+    "registrationSuccessful": "Registracija uspešna! Prijavite se s svojimi podatki."
+  },
+
   
   "navigation": {
     "dashboard": "Nadzorna plošča",
@@ -78,6 +121,31 @@
     "teams": "Ekipe",
     "competences": "Kompetence (neobvezno)",
     "competencesOptional": "Kompetence (neobvezno)",
+    "competencesPlaceholder": "npr. Marketing, Upravljanje dogodkov, Družbena omrežja",
+    "competencesHelp": "Vnesite veščine ali kompetence, ločene z vejicami",
+    "recurringEvents": "Ponavljajoči dogodki",
+    "recurrenceType": "Ponavljanje",
+    "recurrenceNone": "Brez ponavljanja",
+    "recurrenceDaily": "Dnevno",
+    "recurrenceWeekly": "Tedensko",
+    "recurrenceMonthly": "Mesečno",
+    "recurrenceYearly": "Letno",
+    "recurrenceInterval": "Ponovi vsakih",
+    "recurrenceIntervalDays": "dan/dni",
+    "recurrenceIntervalWeeks": "teden/tedni",
+    "recurrenceIntervalMonths": "mesec/meseci",
+    "recurrenceIntervalYears": "leto/leta",
+    "recurrenceEndDate": "Prenehaj ponavljati po",
+    "recurrenceEndDateHelp": "Pustite prazno za neskončno ponavljanje",
+    "recurrencePreview": "To bo ustvarilo dogodke na:",
+    "recurringEvent": "Ponavljajoči dogodek",
+    "recurringPattern": "Vzorec ponavljanja",
+    "recurringUntil": "Do",
+    "recurringIndefinitely": "Se ponavlja neskončno",
+    "partOfSeries": "Del serije ponavljajočih dogodkov",
+    "viewSeries": "Poglej serijo",
+    "parentEvent": "Izvirni dogodek",
+    "recurringInstance": "Ponavljajoča instanca",
     "noTeamsAvailable": "Ni razpoložljivih ekip",
     "noCompetencesAvailable": "Ni razpoložljivih kompetenc",
     "basicInformation": "Osnovne informacije",
@@ -253,5 +321,68 @@
     "welcome": "Dobrodošli",
     "successfullyLogedIn": "Uspešno ste prijavljeni v svoj NVO portal.",
     "ngoInfo": "Podatki o vaši NVO"
+  },
+  "constants": {
+    "teams": {
+      "ENVIRONMENTAL": "Okolje",
+      "SOCIAL": "Socialno", 
+      "HEALTH_AND_MEDICAL": "Zdravje in medicina",
+      "EDUCATIONAL": "Izobraževanje",
+      "HUMANITARIAN_AND_EMERGENCY_RESPONSE": "Humanitarna pomoč in odziv na izredne razmere",
+      "ANIMAL_WELFARE": "Dobrobit živali",
+      "CULTURAL_AND_HERITAGE": "Kultura in dediščina",
+      "ADVOCACY_AND_HUMAN_RIGHTS": "Zagovorništvo in človekove pravice",
+      "SPORTS_AND_RECREATION": "Šport in rekreacija",
+      "TECHNOLOGY_AND_INNOVATION": "Tehnologija in inovacije",
+      "FAITH_AND_SPIRITUAL": "Vera in duhovnost",
+      "ADVOCACY_AND_LEGAL": "Pravna pomoč in zagovorništvo",
+      "OTHER": "Drugo"
+    },
+    "markerTypes": {
+      "VO": "Prostovoljstvo",
+      "SE": "Dogodek"
+    },
+    "eventStatuses": {
+      "applied": "Applied",
+      "accepted": "Accepted", 
+      "waitlisted": "Waitlisted",
+      "completed": "Completed"
+    },
+    "socialPlatforms": {
+      "Instagram": "Instagram",
+      "LinkedIn": "LinkedIn",
+      "TikTok": "TikTok", 
+      "Facebook": "Facebook",
+      "YouTube": "YouTube"
+    },
+    "contactTypes": {
+      "Phone": "Phone",
+      "E-mail": "E-mail"
+    },
+    "ngoOfferings": {
+      "VOLUNTEERING": "Prostovoljstvo",
+      "EVENTS": "Dogodki",
+      "DONATIONS": "Donacije", 
+      "PETITIONS": "Petitions",
+      "PRODUCTS_OR_SERVICES": "Izdelki & storitve"
+    },
+    "developmentStages": {
+      "Eco Pioneer": "Eco Pioneer",
+      "Biosphere Guardian": "Biosphere Guardian",
+      "Gaia's Emissary": "Gaia's Emissary", 
+      "Planet Healer": "Planet Healer",
+      "Cosmic Steward": "Cosmic Steward"
+    },
+    "animalCategories": {
+      "Horror": "Horror",
+      "Fantasy": "Fantasy",
+      "Legendary": "Legendary"
+    },
+    "babyAnimals": {
+      "Modern dragons": "Modern Dragons",
+      "Forest's dead man": "Forest's Dead Man",
+      "Cuties": "Cuties",
+      "Alien predator": "Alien Predator"
+    }
   }
 } 

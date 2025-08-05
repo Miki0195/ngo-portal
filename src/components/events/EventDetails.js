@@ -93,6 +93,43 @@ const EventDetails = () => {
     setShowVolunteersModal(!showVolunteersModal);
   };
 
+  // Helper function to get translated team name
+  const getTranslatedTeamName = (teamName) => {
+    // Normalize team name: convert spaces to underscores and make uppercase
+    const normalizedTeamName = teamName.replace(/\s+/g, '_').toUpperCase();
+    
+    // Convert team name to translation key format
+    const translationKey = `constants.teams.${normalizedTeamName}`;
+    const translated = t(translationKey);
+    
+    // If translation doesn't exist, fallback to original name
+    return translated !== translationKey ? translated : teamName;
+  };
+
+  // Helper function to format recurring pattern
+  const formatRecurrencePattern = (event) => {
+    if (!event || event.recurrence_type === 'none' || !event.recurrence_type) {
+      return null;
+    }
+
+    const interval = event.recurrence_interval || 1;
+    const type = event.recurrence_type;
+    
+    // Create readable pattern description
+    let pattern = '';
+    if (interval === 1) {
+      pattern = t(`events.recurrence${type.charAt(0).toUpperCase() + type.slice(1)}`);
+    } else {
+      pattern = `${t('events.recurrenceInterval')} ${interval} ${t(`events.recurrenceInterval${type.charAt(0).toUpperCase() + type.slice(1).replace('ly', 's')}`)}`;
+    }
+
+    return {
+      pattern,
+      endDate: event.recurrence_end_date,
+      hasEndDate: !!event.recurrence_end_date
+    };
+  };
+
   const hasActiveFilters = filters.searchTerm || filters.startDate;
 
   if (loading) {
@@ -158,6 +195,49 @@ const EventDetails = () => {
               <p><strong>{t('events.endDate')}</strong> {formatDate(event.endDate)}</p>
             </div>
 
+            {/* Recurring Event Information */}
+            {(event.recurrence_type && event.recurrence_type !== 'none') || event.is_recurring_instance ? (
+              <div className="event-info-item recurring-info">
+                <h3>
+                  {event.is_recurring_instance ? t('events.recurringInstance') : t('events.recurringEvent')}
+                </h3>
+                
+                {event.is_recurring_instance && event.parent_event ? (
+                  <div className="recurring-instance-info">
+                    <p className="recurring-badge instance-badge">
+                       {t('events.partOfSeries')}
+                    </p>
+                    <Link 
+                      to={`/events/${event.parent_event}`} 
+                      className="parent-event-link"
+                    >
+                       {t('events.parentEvent')}
+                    </Link>
+                  </div>
+                ) : (
+                  (() => {
+                    const recurrenceInfo = formatRecurrencePattern(event);
+                    return recurrenceInfo ? (
+                      <div className="recurring-pattern-info">
+                        <p className="recurring-badge">
+                           {recurrenceInfo.pattern}
+                        </p>
+                        {recurrenceInfo.hasEndDate ? (
+                          <p className="recurring-end">
+                            {t('events.recurringUntil')}: {formatDate(recurrenceInfo.endDate)}
+                          </p>
+                        ) : (
+                          <p className="recurring-indefinite">
+                             {t('events.recurringIndefinitely')}
+                          </p>
+                        )}
+                      </div>
+                    ) : null;
+                  })()
+                )}
+              </div>
+            ) : null}
+
             {/* Only show volunteers section if people_needed > 0 */}
             {event.people_needed > 0 && (
               <div className="event-info-item">
@@ -196,7 +276,7 @@ const EventDetails = () => {
                 <h3>{t('events.focusTeams')}</h3>
                 <div className="event-tags">
                   {event.focus_teams.map((team, index) => (
-                    <span key={index} className="event-tag">{safeRenderText(team)}</span>
+                    <span key={index} className="event-tag">{getTranslatedTeamName(safeRenderText(team))}</span>
                   ))}
                 </div>
               </div>
@@ -215,7 +295,7 @@ const EventDetails = () => {
 
             {event.event_xp > 0 && (
               <div className="event-info-item">
-                <h3>Experience Points</h3>
+                <h3>{t('events.experiencePoints')}</h3>
                 <p>{event.event_xp} XP</p>
               </div>
             )}

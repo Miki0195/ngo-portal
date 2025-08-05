@@ -88,6 +88,23 @@ const EventsList = () => {
     });
   };
 
+  // Helper function to format recurring pattern for display
+  const formatRecurrencePattern = (event) => {
+    if (!event || event.recurrence_type === 'none' || !event.recurrence_type) {
+      return null;
+    }
+
+    const interval = event.recurrence_interval || 1;
+    const type = event.recurrence_type;
+    
+    // Create readable pattern description
+    if (interval === 1) {
+      return t(`events.recurrence${type.charAt(0).toUpperCase() + type.slice(1)}`);
+    } else {
+      return `${t('events.recurrenceInterval')} ${interval} ${t(`events.recurrenceInterval${type.charAt(0).toUpperCase() + type.slice(1).replace('ly', 's')}`)}`;
+    }
+  };
+
   const EventCard = ({ event }) => (
     <div key={event.id} className="event-card">
       <div className="event-image">
@@ -96,9 +113,34 @@ const EventsList = () => {
         ) : (
           <div className="placeholder-image">No Image</div>
         )}
+        
+        {/* Recurring Event Badges */}
+        {(event.recurrence_type && event.recurrence_type !== 'none') || event.is_recurring_instance ? (
+          <div className="recurring-badges">
+            {event.is_recurring_instance ? (
+              <span className="recurring-badge instance-badge" title={t('events.partOfSeries')}>
+                 {t('events.recurringInstance')}
+              </span>
+            ) : (
+              <span className="recurring-badge parent-badge" title={formatRecurrencePattern(event)}>
+                 {t('events.recurringEvent')}
+              </span>
+            )}
+          </div>
+        ) : null}
       </div>
       <div className="event-content">
         <h3 className="event-title">{event.eventName}</h3>
+        
+        {/* Recurring Pattern Info */}
+        {event.recurrence_type && event.recurrence_type !== 'none' && !event.is_recurring_instance && (
+          <div className="recurring-pattern-display">
+            <span className="recurring-pattern-text">
+               {formatRecurrencePattern(event)}
+            </span>
+          </div>
+        )}
+        
         <p className="event-date">
           <strong>{t('events.startDate')}</strong> {formatDate(event.startDate)}
         </p>
