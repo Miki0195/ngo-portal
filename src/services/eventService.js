@@ -184,22 +184,36 @@ const eventService = {
     }
   },
 
-  getEventGallery: async (eventId) => {
-    const cachedGallery = cache.get(eventId, 'galleries');
-    if (cachedGallery) {
-      return { success: true, data: cachedGallery };
-    }
-    
+  async getEventGallery(eventId) {
     try {
       const response = await api.get(`/api/events/${eventId}/gallery/`);
-      
-      if (response.data) {
-        cache.set(eventId, response.data, 'galleries');
-      }
-      
       return { success: true, data: response.data };
     } catch (error) {
       const errorMessage = error.response?.data?.error || 'Failed to fetch event gallery';
+      return { success: false, error: errorMessage };
+    }
+  },
+
+  async uploadEventPhotos(formData) {
+    try {
+      const response = await api.post('/api/event/photos/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return { success: true, data: response.data };
+    } catch (error) {
+      const errorMessage = error.response?.data?.error || 'Failed to upload photos';
+      return { success: false, error: errorMessage };
+    }
+  },
+
+  async deleteEventPhoto(eventId, photoId) {
+    try {
+      const response = await api.delete(`/api/events/${eventId}/gallery/${photoId}/delete/`);
+      return { success: true, data: response.data };
+    } catch (error) {
+      const errorMessage = error.response?.data?.error || 'Failed to delete photo';
       return { success: false, error: errorMessage };
     }
   }

@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import eventService from '../../services/eventService';
 import { useFilterContext } from '../../context/FilterContext';
 import EventVolunteersModal from './EventVolunteersModal';
+import EventGallery from './EventGallery';
 import { FaUsers } from 'react-icons/fa';
 import '../../styles/EventDetails.css';
 import '../../styles/EventVolunteers.css';
@@ -13,7 +14,6 @@ const EventDetails = () => {
   const navigate = useNavigate();
   const { filters } = useFilterContext();
   const [event, setEvent] = useState(null);
-  const [gallery, setGallery] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showVolunteersModal, setShowVolunteersModal] = useState(false);
@@ -32,11 +32,6 @@ const EventDetails = () => {
           });
           
           setEvent(eventResponse.data);
-          
-          const galleryResponse = await eventService.getEventGallery(id);
-          if (galleryResponse.success) {
-            setGallery(galleryResponse.data);
-          }
         } else {
           setError(eventResponse.error);
         }
@@ -302,18 +297,7 @@ const EventDetails = () => {
           </div>
         </div>
 
-        {gallery.length > 0 && (
-          <div className="event-gallery">
-            <h2>{t('events.eventGallery')}</h2>
-            <div className="gallery-grid">
-              {gallery.map((photo, index) => (
-                <div key={index} className="gallery-item">
-                  <img src={typeof photo.image === 'string' ? photo.image : ''} alt={`Event gallery ${index + 1}`} />
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        <EventGallery eventId={id} />
       </div>
 
       {/* Volunteers Modal */}

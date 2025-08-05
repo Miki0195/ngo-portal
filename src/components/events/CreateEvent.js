@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import eventService from '../../services/eventService';
 import authService from '../../services/authService';
+import EventGallery from './EventGallery';
 import '../../styles/CreateEvent.css';
 
 // Get the base URL from environment variable
@@ -44,6 +45,7 @@ const CreateEvent = () => {
   const [showVolunteersForEvent, setShowVolunteersForEvent] = useState(false);
   const [isGeocodingLoading, setIsGeocodingLoading] = useState(false);
   const [recurringPreview, setRecurringPreview] = useState([]);
+  const [createdEventId, setCreatedEventId] = useState(null);
 
   // Fetch team and competence options
   useEffect(() => {
@@ -170,8 +172,8 @@ const CreateEvent = () => {
     
     setFormData(prev => {
       const newFormData = {
-        ...prev,
-        [name]: value 
+      ...prev,
+      [name]: value 
       };
       
       // Update recurring preview when dates change
@@ -267,6 +269,7 @@ const CreateEvent = () => {
       
       if (response.success) {
         setSuccess(true);
+        setCreatedEventId(response.data.id);
         setTimeout(() => {
           navigate(`/events/${response.data.id}`);
         }, 1500);
@@ -427,9 +430,12 @@ const CreateEvent = () => {
         <h1>{t('events.createEvent')}</h1>
       </div>
 
-      {success ? (
-        <div className="create-event-success">
-          <p>{t('events.createEventSuccess')}</p>
+      {success && createdEventId ? (
+        <div>
+          <div className="create-event-success">
+            <p>{t('events.createEventSuccess')}</p>
+          </div>
+          <EventGallery eventId={createdEventId} />
         </div>
       ) : (
         <form className="create-event-form" onSubmit={handleSubmit}>
@@ -606,14 +612,14 @@ const CreateEvent = () => {
               <label>{t('events.competencesOptional')}</label>
               <div className="checkbox-group">
                 {/* Replaced checkbox group with a simple text input */}
-                <input
+                        <input
                   type="text"
                   id="competences"
                   name="competences"
                   value={formData.competences}
                   onChange={handleChange}
                   placeholder={t('events.competencesPlaceholder')}
-                />
+                        />
                 <p className="competences-help">{t('events.competencesHelp')}</p>
               </div>
             </div>
@@ -663,11 +669,11 @@ const CreateEvent = () => {
             </div>
             
             <div className="location-buttons-container">
-              <button 
-                type="button" 
-                className="location-button"
-                onClick={getUserLocation}
-              >
+            <button 
+              type="button" 
+              className="location-button"
+              onClick={getUserLocation}
+            >
                 {t('events.useCurrentLocation')}
               </button>
               
@@ -685,7 +691,7 @@ const CreateEvent = () => {
                 disabled={isGeocodingLoading}
               >
                 {isGeocodingLoading ? t('events.gettingAddress') : t('events.getAddressFromCoords')}
-              </button>
+            </button>
             </div>
             
             <div className="location-help">
@@ -708,23 +714,23 @@ const CreateEvent = () => {
             
             {/* Always show for Volunteering opportunities */}
             {formData.markerType === 1 && (
-              <div className="form-group">
+            <div className="form-group">
                 <label htmlFor="people_needed">{t('events.volunteersNeeded')}</label>
-                <input
-                  type="number"
-                  min="0"
-                  id="people_needed"
-                  name="people_needed"
-                  value={formData.people_needed}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
+              <input
+                type="number"
+                min="0"
+                id="people_needed"
+                name="people_needed"
+                value={formData.people_needed}
+                onChange={handleChange}
+                required
+              />
+            </div>
             )}
             
             {/* Optional toggle for Events */}
             {formData.markerType === 2 && (
-              <div className="form-group">
+            <div className="form-group">
                 <div className="volunteer-toggle-section">
                   <label className="toggle-label">
                     <input
@@ -744,15 +750,15 @@ const CreateEvent = () => {
                 {showVolunteersForEvent && (
                   <div className="form-group volunteer-input">
                     <label htmlFor="people_needed">{t('events.volunteersNeededOptional')}</label>
-                    <input
-                      type="number"
-                      min="0"
+              <input
+                type="number"
+                min="0"
                       id="people_needed"
                       name="people_needed"
                       value={formData.people_needed}
-                      onChange={handleChange}
-                    />
-                  </div>
+                onChange={handleChange}
+              />
+            </div>
                 )}
               </div>
             )}

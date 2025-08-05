@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import eventService from '../../services/eventService';
 import authService from '../../services/authService';
+import EventGallery from './EventGallery';
 import '../../styles/CreateEvent.css';
 
 // Get the base URL from environment variable
@@ -517,8 +518,8 @@ const EditEvent = () => {
     
     setFormData(prev => {
       const newFormData = {
-        ...prev,
-        [name]: value 
+      ...prev,
+      [name]: value 
       };
       
       // Update recurring preview when dates change
@@ -717,7 +718,7 @@ const EditEvent = () => {
               <label>{t('events.competencesOptional')}</label>
               <div className="checkbox-group">
                 {/* Replaced checkbox with text input for competences */}
-                <input
+                        <input
                   type="text"
                   id="competences"
                   name="competences"
@@ -904,6 +905,11 @@ const EditEvent = () => {
             </button>
           </div>
         </form>
+      )}
+      
+      {/* Event Gallery - Show when editing existing event */}
+      {!initialLoading && eventId && !success && (
+        <EventGallery eventId={eventId} />
       )}
     </div>
   );
