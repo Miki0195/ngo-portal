@@ -41,7 +41,17 @@
     "registerButton": "Register NGO",
     "invalidCredentials": "Invalid email or password",
     "loginSuccess": "Welcome back!",
-    "registerSuccess": "Registration successful!"
+    "registerSuccess": "Registration successful!",
+    "welcomeBack": "Welcome back! Please sign in to continue.",
+    "emailPlaceholder": "your-email@example.com",
+    "passwordPlaceholder": "Enter your password",
+    "or": "or",
+    "globalImpact": "Global Impact",
+    "communityDriven": "Community Driven",
+    "innovativeSolutions": "Innovative Solutions",
+    "startNGOJourney": "Start Your NGO Journey",
+    "makeDifference": "Make a Difference",
+    "joinCommunity": "Join Our Community"
   },
   
   "registration": {
@@ -83,7 +93,8 @@
     "invalidEmail": "Please enter a valid email address",
     "invalidWebsite": "Please enter a valid website URL (starting with http:// or https://)",
     "unexpectedError": "An unexpected error occurred. Please try again.",
-    "registrationSuccessful": "Registration successful! Please login with your credentials."
+    "registrationSuccessful": "Registration successful! Please login with your credentials.",
+    "createAccount": "Create your organization's account to get started"
   },
   
   "navigation": {
@@ -113,6 +124,17 @@
     "imageUrl": "Image URL",
     "imageUrlPlaceholder": "https://example.com/image.jpg",
     "imagePreviewAlt": "Event preview",
+    "uploadImage": "Upload Image",
+    "uploadingImage": "Uploading...",
+    "imageUploadSuccess": "Image uploaded successfully!",
+    "imageUploadError": "Failed to upload image",
+    "chooseFile": "Choose File",
+    "dragDropImage": "Or drag and drop an image here",
+    "supportedFormats": "Supported formats: JPG, PNG, GIF (max 5MB)",
+    "removeImage": "Remove Image",
+    "changeImage": "Change Image",
+    "uploadDifferentImage": "Upload Different Image",
+    "existingImageLoaded": "Existing image loaded",
     "volunteers": "Volunteers",
     "volunteersNeeded": "Number of Volunteers Needed*",
     "volunteersNeededOptional": "Number of Volunteers Needed",

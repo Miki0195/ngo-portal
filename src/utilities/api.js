@@ -50,7 +50,7 @@ const handleLogout = () => {
   localStorage.removeItem('refreshToken');
   localStorage.removeItem('user');
   
-  window.location.href = '/login';
+  window.location.href = '/#/login';
 };
 
 api.interceptors.request.use(

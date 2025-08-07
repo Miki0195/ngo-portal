@@ -16,7 +16,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     authService.logout();
-    window.location.href = '/login';
+    window.location.href = '/#/login';
   };
 
   if (!user) return null;

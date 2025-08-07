@@ -41,7 +41,17 @@
     "registerButton": "Registriraj NGO",
     "invalidCredentials": "Neveljavna e-pošta ali geslo",
     "loginSuccess": "Dobrodošli nazaj!",
-    "registerSuccess": "Uspešna registracija!"
+    "registerSuccess": "Uspešna registracija!",
+    "welcomeBack": "Dobrodošli nazaj! Prijavite se za nadaljevanje.",
+    "emailPlaceholder": "vasa-eposta@primer.si",
+    "passwordPlaceholder": "Vnesite svoje geslo",
+    "or": "ali",
+    "globalImpact": "Globalni vpliv",
+    "communityDriven": "Vodi skupnost",
+    "innovativeSolutions": "Inovativne rešitve",
+    "startNGOJourney": "Začnite svojo NGO pot",
+    "makeDifference": "Naredite razliko",
+    "joinCommunity": "Pridružite se naši skupnosti"
   },
 
   "registration": {
@@ -83,7 +93,8 @@
     "invalidEmail": "Vnesite veljaven e-poštni naslov",
     "invalidWebsite": "Vnesite veljaven URL spletne strani (ki se začne s http:// ali https://)",
     "unexpectedError": "Prišlo je do nepričakovane napake. Poskusite znova.",
-    "registrationSuccessful": "Registracija uspešna! Prijavite se s svojimi podatki."
+    "registrationSuccessful": "Registracija uspešna! Prijavite se s svojimi podatki.",
+    "createAccount": "Ustvarite račun vaše organizacije za začetek"
   },
 
   
@@ -112,8 +123,19 @@
     "latitude": "Zemljepisna širina",
     "longitude": "Zemljepisna dolžina",
     "imageUrl": "URL slike",
-    "imageUrlPlaceholder": "https://primer.si/slika.jpg",
+    "imageUrlPlaceholder": "https://primer.com/slika.jpg",
     "imagePreviewAlt": "Predogled dogodka",
+    "uploadImage": "Naloži sliko",
+    "uploadingImage": "Nalagam...",
+    "imageUploadSuccess": "Slika je bila uspešno naložena!",
+    "imageUploadError": "Napaka pri nalaganju slike",
+    "chooseFile": "Izberi datoteko",
+    "dragDropImage": "Ali povleci in spusti sliko tukaj",
+    "supportedFormats": "Podprte oblike: JPG, PNG, GIF (največ 5MB)",
+    "removeImage": "Odstrani sliko",
+    "changeImage": "Spremeni sliko",
+    "uploadDifferentImage": "Naloži drugo sliko",
+    "existingImageLoaded": "Obstoječa slika naložena",
     "volunteers": "Prostovoljci",
     "volunteersNeeded": "Število potrebnih prostovoljcev*",
     "volunteersNeededOptional": "Število potrebnih prostovoljcev",

@@ -126,9 +126,7 @@ const eventService = {
         eventData.focus_teams = [].concat(eventData.focus_teams || []);
       }
       
-      if (eventData.competences && !Array.isArray(eventData.competences)) {
-        eventData.competences = [].concat(eventData.competences || []);
-      }
+      // Removed competences array conversion since competences are now a string
       
       const response = await api.post('/api/events/create/', eventData);
       
@@ -150,9 +148,7 @@ const eventService = {
         eventData.focus_teams = [].concat(eventData.focus_teams || []);
       }
       
-      if (eventData.competences && !Array.isArray(eventData.competences)) {
-        eventData.competences = [].concat(eventData.competences || []);
-      }
+      // Removed competences array conversion since competences are now a string
       
       console.log('Sending data to update event:', eventData);
       const response = await api.put(`/api/events/${eventId}/update/`, eventData);
@@ -214,6 +210,23 @@ const eventService = {
       return { success: true, data: response.data };
     } catch (error) {
       const errorMessage = error.response?.data?.error || 'Failed to delete photo';
+      return { success: false, error: errorMessage };
+    }
+  },
+
+  async uploadMainEventImage(file) {
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      const response = await api.post('/api/event/main-image/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return { success: true, data: response.data };
+    } catch (error) {
+      const errorMessage = error.response?.data?.error || 'Failed to upload main image';
       return { success: false, error: errorMessage };
     }
   }

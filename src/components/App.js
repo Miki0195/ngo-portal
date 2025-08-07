@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './auth/Login';
 import Register from '../pages/Register';
 import Dashboard from './dashboard/Dashboard';
@@ -19,85 +19,65 @@ const ProtectedRoute = ({ children }) => {
   return isAuthenticated ? children : <Navigate to="/login" />;
 };
 
-const ProtectedLayout = ({ children }) => {
-  return (
-    <ProtectedRoute>
-      <Layout>{children}</Layout>
-    </ProtectedRoute>
-  );
+const PublicRoute = ({ children }) => {
+  const isAuthenticated = authService.isAuthenticated();
+  return !isAuthenticated ? children : <Navigate to="/dashboard" />;
 };
 
 function App() {
   return (
-    <Router>
-      <div className="App">
+    <div className="App">
+      <Router>
         <FilterProvider>
-        <Routes>
-          {/* Public routes */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          
-          {/* Protected routes with Layout */}
-          <Route path="/dashboard" element={
-            <ProtectedLayout>
-              <Dashboard />
-            </ProtectedLayout>
-          } />
-          
-          <Route path="/events" element={
-            <ProtectedLayout>
-              <EventsList />
-            </ProtectedLayout>
-          } />
-          
-          <Route path="/events/create" element={
-            <ProtectedLayout>
-              <CreateEvent />
-            </ProtectedLayout>
-          } />
-          
-          <Route path="/events/:id" element={
-            <ProtectedLayout>
-              <EventDetails />
-            </ProtectedLayout>
-          } />
-          
-          <Route path="/events/:eventId/edit" element={
-            <ProtectedLayout>
-              <EditEvent />
-            </ProtectedLayout>
-          } />
-            
-          <Route path="/profile" element={
-            <ProtectedLayout>
-              <Profile />
-            </ProtectedLayout>
-          } />
+          <Routes>
+            {/* Public Routes */}
+            <Route 
+              path="/login" 
+              element={
+                <PublicRoute>
+                  <Login />
+                </PublicRoute>
+              } 
+            />
+            <Route 
+              path="/register" 
+              element={
+                <PublicRoute>
+                  <Register />
+                </PublicRoute>
+              } 
+            />
 
-          <Route path="/applications" element={
-            <ProtectedLayout>
-              <Applications />
-            </ProtectedLayout>
-          } />
-          
-          {/* Redirect root to login or dashboard based on auth status */}
-          <Route path="/" element={
-            authService.isAuthenticated() 
-              ? <Navigate to="/dashboard" /> 
-              : <Navigate to="/login" />
-          } />
-          
-          {/* Catch all route - redirect to dashboard if authenticated */}
-          <Route path="*" element={
-            authService.isAuthenticated() 
-              ? <Navigate to="/dashboard" /> 
-              : <Navigate to="/login" />
-          } />
-        </Routes>
+            {/* Protected Routes */}
+            <Route path="/" element={
+              <ProtectedRoute>
+                <Layout />
+              </ProtectedRoute>
+            }>
+              {/* Dashboard */}
+              <Route index element={<Dashboard />} />
+              <Route path="dashboard" element={<Dashboard />} />
+              
+              {/* Events */}
+              <Route path="events" element={<EventsList />} />
+              <Route path="events/:id" element={<EventDetails />} />
+              <Route path="events/create" element={<CreateEvent />} />
+              <Route path="events/:id/edit" element={<EditEvent />} />
+              
+              {/* Profile */}
+              <Route path="profile" element={<Profile />} />
+              
+              {/* Applications */}
+              <Route path="applications" element={<Applications />} />
+            </Route>
+
+            {/* Fallback */}
+            <Route path="*" element={<Navigate to="/login" />} />
+          </Routes>
         </FilterProvider>
-      </div>
-    </Router>
+      </Router>
+    </div>
   );
 }
 
-export default App;
+export default App; 

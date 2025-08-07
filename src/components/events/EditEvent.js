@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import eventService from '../../services/eventService';
 import authService from '../../services/authService';
 import EventGallery from './EventGallery';
+import ImageUpload from './ImageUpload';
 import '../../styles/CreateEvent.css';
 
 // Get the base URL from environment variable
@@ -12,7 +13,7 @@ const baseURL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 const EditEvent = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { eventId } = useParams();
+  const { id: eventId } = useParams();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
@@ -117,19 +118,26 @@ const EditEvent = () => {
   useEffect(() => {
     const fetchFilteringOptions = async () => {
       try {
+        console.log('EditEvent - Fetching filtering options from:', `${baseURL}/api/events/filters/`);
         const response = await fetch(`${baseURL}/api/events/filters/`);
+        console.log('EditEvent - Response status:', response.status, response.ok);
+        
         if (response.ok) {
           const data = await response.json();
+          console.log('EditEvent - Received data:', data);
           
           if (data.teams && data.teams.length > 0) {
+            console.log('EditEvent - Setting teams:', data.teams);
             setTeamOptions(data.teams);
+          } else {
+            console.log('EditEvent - No teams found in response');
           }
           // Removed competenceOptions fetch
         } else {
-          console.error('Failed to fetch filtering options');
+          console.error('EditEvent - Failed to fetch filtering options, status:', response.status);
         }
       } catch (error) {
-        console.error('Error fetching filtering options:', error);
+        console.error('EditEvent - Error fetching filtering options:', error);
       }
     };
 
@@ -412,8 +420,20 @@ const EditEvent = () => {
         eventDataToSubmit.endDate = formattedDate;
       }
       
-      eventDataToSubmit.focus_teams = Array.isArray(formData.focus_teams) ? formData.focus_teams : [];
-      eventDataToSubmit.competences = formData.competences; // Competences are now a string
+      // Format recurrence_end_date if provided
+      if (eventDataToSubmit.recurrence_end_date && eventDataToSubmit.recurrence_end_date.trim() !== '') {
+        const [datePart, timePart] = eventDataToSubmit.recurrence_end_date.split('T');
+        const formattedDate = `${datePart} ${timePart}:00Z`;
+        eventDataToSubmit.recurrence_end_date = formattedDate;
+      } else {
+        // Remove empty recurrence_end_date to avoid validation errors
+        delete eventDataToSubmit.recurrence_end_date;
+      }
+      
+      eventDataToSubmit.focus_teams_data = Array.isArray(formData.focus_teams) ? formData.focus_teams : [];
+      eventDataToSubmit.competences_data = formData.competences; // Send as competences_data for backend
+      delete eventDataToSubmit.focus_teams; // Remove the original focus_teams field
+      delete eventDataToSubmit.competences; // Remove the original competences field
       
       const response = await eventService.updateEvent(eventId, eventDataToSubmit);
       
@@ -696,21 +716,24 @@ const EditEvent = () => {
             <div className="form-group">
               <label>{t('events.teams')}</label>
               <div className="checkbox-group">
-                {teamOptions.length > 0 ? (
-                  teamOptions.map(team => (
-                    <div key={team.id} className="checkbox-item">
-                      <input
-                        type="checkbox"
-                        id={`team-${team.id}`}
-                        checked={formData.focus_teams.includes(team.id)}
-                        onChange={() => handleTeamCheckbox(team.id)}
-                      />
-                      <label htmlFor={`team-${team.id}`}>{getTranslatedTeamName(team.name)}</label>
-                    </div>
-                  ))
-                ) : (
-                  <p>{t('events.noTeamsAvailable')}</p>
-                )}
+                {(() => {
+                  console.log('EditEvent - Rendering teams, teamOptions:', teamOptions);
+                  return teamOptions.length > 0 ? (
+                    teamOptions.map(team => (
+                      <div key={team.id} className="checkbox-item">
+                        <input
+                          type="checkbox"
+                          id={`team-${team.id}`}
+                          checked={formData.focus_teams.includes(team.id)}
+                          onChange={() => handleTeamCheckbox(team.id)}
+                        />
+                        <label htmlFor={`team-${team.id}`}>{getTranslatedTeamName(team.name)}</label>
+                      </div>
+                    ))
+                  ) : (
+                    <p>{t('events.noTeamsAvailable')}</p>
+                  );
+                })()}
               </div>
             </div>
 
@@ -870,20 +893,13 @@ const EditEvent = () => {
             )}
             
             <div className="form-group">
-              <label htmlFor="main_image_url">{t('events.imageUrl')}</label>
-              <input
-                type="url"
-                id="main_image_url"
-                name="main_image_url"
-                value={formData.main_image_url}
-                onChange={handleChange}
+              <ImageUpload
+                imageUrl={formData.main_image_url}
+                onImageChange={(url) => setFormData(prev => ({ ...prev, main_image_url: url }))}
                 placeholder={t('events.imageUrlPlaceholder')}
+                label={t('events.imageUrl')}
+                id="main_image_url"
               />
-              {formData.main_image_url && (
-                <div className="image-preview">
-                  <img src={formData.main_image_url} alt={t('events.imagePreviewAlt')} />
-                </div>
-              )}
             </div>
           </div>
 
@@ -908,9 +924,9 @@ const EditEvent = () => {
       )}
       
       {/* Event Gallery - Show when editing existing event */}
-      {!initialLoading && eventId && !success && (
+      {/* {!initialLoading && eventId && !success && (
         <EventGallery eventId={eventId} />
-      )}
+      )} */}
     </div>
   );
 };
